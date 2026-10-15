@@ -1,0 +1,178 @@
+<!DOCTYPE html> <!-- 避错声明 -->
+<html>
+    <head>
+        <title>Welcome</title>
+        <meta charset="UTF-8"> <!-- 单标签，设置字符编码为UTF-8 -->
+        <link rel="stylesheet" href="new.css"> <!-- 链接外部CSS文件 -->
+    </head>
+    <body>
+        <!-- 标题标签，h1到h6分别表示不同级别的标题 -->
+        <h1 align="center">Welcome to Our Website!</h1>
+        <h2>二级标题</h2>
+        <h2>二级标题</h2>
+        <h3>三级标题</h3>
+        <h4>四级标题</h4>
+        <h4>四级标题</h4>
+        <h5>五级标题</h5>
+        <h6>六级标题</h6>
+
+        <!-- 段落标签，使用<br/>换行 -->
+        <p class="eat drink">We are glad to <br/>have you here.</p>  <!-- 段落标签，使用<br/>换行 -->
+        <hr> <!-- 水平线 -->
+        <hr color="blue" size="5px" width="300px" align="left"> <!-- 水平线，设置颜色和高度 -->
+        <br/> 
+
+        <!-- 图片标签，设置图片的宽度和高度 -->
+        <img src="/img/1.jpg" alt="nayeon" title="林娜琏" width="100px"> <!-- 图片标签，设置图片的宽度和高度 -->
+        <img src="/img/2.jpg" alt="twice" title="兔瓦斯" width="100px">
+        <img src="https://pic.rmb.bdstatic.com/bjh/bc191e02f0b/250822/62bd45f71b59ec075048f87ec34af235.jpeg" alt="twice" title="兔瓦斯" width="100px">
+        <br/>
+
+        <!-- 超链接标签，点击后跳转 -->
+        <a href="https://www.baidu.com/Index.htm">点击这里</a><br/> <!-- 超链接标签，点击后跳转到百度首页 -->
+        <a href="https://www.doubao.com/chat/?channel=bing_sem&source=dbweb_yl_sem_pinp_hexin_ocpc_faxx_6&keywordid=76553916692574&Campaign=%E5%93%81%E7%89%8C%E8%AF%8D-%E6%A0%B8%E5%BF%83-%E8%B1%86%E5%8C%85web-%E9%95%BF%E5%B0%BE%E8%AF%8D-TCPA6&AdGroup=%E6%A0%B8%E5%BF%83-%E8%B1%86%E5%8C%85web-%E9%95%BF%E5%B0%BE%E8%AF%8D&CampaignId=486127663&AdGroupId=1224857029834720&MatchType=e&AdId=76553698577826&keyword=.%E8%B1%86%E5%8C%85&msclkid=6f10c5c60b091abadd0face5ea7375a3&BidMatchType=be">
+            <img src="https://pic.rmb.bdstatic.com/bjh/bc191e02f0b/250822/62bd45f71b59ec075048f87ec34af235.jpeg" width="200px">
+        </a><br/>
+        <a href="actor.html">演员展示</a> <!-- 超链接标签，点击后跳转到actor.html页面 -->
+        <br/>
+
+        <!-- 文本格式化标签 -->
+        <i id="it">这是斜体</i><br/> <!-- 斜体标签 -->
+        <b id="ss">这是粗体</b><br/> <!-- 粗体标签 -->
+        <u id="mm">这是下划线</u><br/> <!-- 下划线标签 -->
+        <em>这是强调</em><br/> <!-- 强调标签 -->
+        <strong>这是加粗强调</strong><br/> <!-- 加粗强调标签 -->
+        <span>这是普通文本</span><br/> <!-- 普通文本标签 -->
+        <del>这是删除线</del><br/> <!-- 删除线标签 -->
+        <mark>这是高亮文本</mark><br/> <!-- 高亮文本标签 -->
+
+        <!-- 列表标签 -->
+        <ul class="eat"> <!-- 无序列表，默认黑点 -->
+            <li>列表项1</li>
+        </ul>
+
+        <ul type="circle"> <!-- 无序列表，空心圆 -->
+            <li>列表项1
+                <ol>
+                    <p>子列表</p>
+                    <li>1111</li>
+                </ol>
+            </li>
+        </ul>
+
+        <ul type="square"> <!-- 无序列表，小方块 -->
+            <li>列表项1</li>
+        </ul>
+
+        <ul type="none"> <!-- 无序列表，无标记 -->
+            <li>列表项1</li>
+        </ul>
+
+        <ol type="A"> <!-- 有序列表，默认1234 -->
+            <li>cat</li>
+            <li>dog</li>
+            <li>cow</li>
+        </ol>
+
+        <ol type="a"> <!-- 有序列表 -->
+            <li>林娜琏
+                <ol type="i"> <!-- 嵌套列表 -->
+                    <li>脸</li>
+                    <li>nayeon</li>
+                    <li>nalo3</li>
+                </ol>
+            </li>
+            <li>sana</li>
+            <li>momo</li>
+        </ol>
+
+        <!-- 表格标签 -->
+        <table border="1" width="400" height="100" align="center"> <!-- 表格标签，设置边框、单元格间距和单元格内边距 -->
+            <tr> <!-- 表格行 -->
+                <td>姓名</td> <!-- 表头单元格 -->
+                <td>年龄</td>
+                <td>性别</td>
+                <td>备注</td>
+            </tr>
+            <tr>
+                <td>林娜琏</td> <!-- 表格单元格 -->
+                <td>25</td>
+                <td>女</td>
+                <td rowspan="5">TWICE成员</td> <!-- 纵向合并单元格 -->
+            </tr>
+            <tr>
+                <td>金多贤</td>
+                <td colspan="2">24女</td> <!-- 横向合并单元格 --> 
+            </tr>
+            <tr>
+                <td rowspan="2" colspan="2">孙彩瑛23</td> <!-- 横纵向合并单元格 -->
+              
+                <td>女</td> 
+            </tr>
+            <tr>
+       
+                <td>女</td>
+            </tr>
+            <tr>
+                <td>sana</td>
+                <td>25</td>
+                <td>女</td>  
+            </tr>
+        </table>
+
+        <!-- 表单标签 -->
+        <form action="submit.php" method="post" name="userForm"> <!-- 表单标签，设置提交方式为POST -->
+            <label for="name">姓名：</label> <!-- 标签标签，for属性与输入框的id属性对应 -->
+            <input type="text" id="name" name="name"><br/> <!-- 输入框，设置类型为文本 -->
+            
+            <label for="email">邮箱：</label>
+            <input type="email" id="email" name="email"><br/> <!-- 输入框，设置类型为邮箱 -->
+            
+            <label for="password">密码：</label>
+            <input type="password" id="password" name="password"><br/> <!-- 输入框，设置类型为密码 -->
+
+            <input type="submit" value="提交"> <!-- 提交按钮 -->
+        </form>
+
+        <!-- 块级元素div form h1-h6 hr p table ul -->
+        <div id="container">
+            <p>这是一个块级元素div容器</p>
+            <ol>
+                <li>列表项1</li>
+                <li>列表项2</li>
+                <li>列表项3</li>
+            </ol>
+            <p>这是一个段落</p>
+        </div>
+        <div id="content">
+            <p>这是另一个块级元素div容器</p>
+        </div>
+        <!-- 内联元素a b em span strong -->
+        <a href="#">这是一个链接</a>
+        <b>这是加粗文本</b>
+        <em>这是斜体文本</em>
+        <span>这是一个行内元素span</span>
+        <strong>这是一个加粗的行内元素strong</strong>
+        <!--行内块级元素 button img input-->
+        <button>这是一个按钮</button>
+        <img src="https://via.placeholder.com/150" alt="这是一个图片">
+        <input type="text" placeholder="这是一个输入框">
+
+        <!-- 容器 -->
+        <header>
+            <h1>欢迎来到我的网站</h1>
+        </header>
+        <nav>导航栏</nav>
+        <article>文章
+            <section>
+                文档中的节，如章节、页脚、页眉
+            </section>
+        </article> 
+        <aside>侧边栏</aside>
+        <footer>
+            <p>这是页脚内容</p>
+        </footer>
+        
+
+    </body>
+</html>
