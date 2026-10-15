@@ -1,0 +1,80 @@
+/*字体属性*/
+p{
+    color:rgb(167, 100, 100);
+    font-size:15px;
+    font-weight:700;
+    font-family: "SimHei";
+    font-style: italic;
+}
+h1{
+    color: #154cf1;
+}
+#container{
+    width:200px;
+    height:200px;
+    background-color:rgba(0, 255, 255, 0.553);
+}
+/*背景图片属性*/
+#content{
+    width:600px;
+    height:100px;
+    background-image:url(img/1.jpg);
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-position: left center;
+}
+.eat{
+    color:rgb(232, 37, 225);
+
+}
+/*文本对齐属性*/
+.drink{
+    font-size:30px;
+    text-align:center;
+    text-decoration:underline; /* 下划线 */
+    text-transform: capitalize; /* 首字母大写 */
+    text-indent: 2em; /* 首行缩进 */
+
+}
+#it{
+    color:rgba(255, 166, 0, 0.733);
+}
+#ss,#mm{
+    color:purple;
+}
+
+/*表格属性*/
+table,td{
+    border: 3px solid rgb(30, 212, 194);
+}
+table{
+    border-collapse: collapse; /* 合并边框 */
+    /* width:600px;
+    height:300px; */
+}
+td{
+    text-align: center;
+    vertical-align: center;/* 垂直居中 */
+    padding:10px;
+    background-color: rgba(0, 255, 255, 0.123);
+    color:rgba(44, 44, 224, 0.737);
+    font-weight: 700;
+}
+
+/*后代选择器 只要是ul的后代li标签都生效，除了li标签都不生效，比如p*/
+ul li{
+    color:blueviolet;
+}
+/*子选择器 只要是ul的直系子元素li标签都生效，更深层的不生效*/
+div > p {
+    color: red;
+}
+/*相邻兄弟选择器 只要是h1的紧接着的兄弟元素h2标签都生效，其他不生效*/
+h1 + h2 {
+    color: green;
+}
+/*通用兄弟选择器 只要是h3的兄弟元素h4标签都生效，其他不生效*/
+h3 ~ h4 {
+    color: blue;
+}
+
