@@ -1,0 +1,1180 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>香蕉收集大作战 · 11.25</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 60px;
+    }
+
+    .game-page {
+      width: min(1000px, 90%);
+      margin: 0 auto;
+      padding: 35px 0 50px;
+      position: relative;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color .3s;
+    }
+
+    .back-link:hover {
+      color: var(--gold-dark);
+    }
+
+    /* 标题 */
+    .game-header {
+      text-align: center;
+      margin: 35px 0 28px;
+    }
+
+    .game-tag {
+      display: inline-block;
+      padding: 7px 18px;
+      border-radius: 30px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(255,255,255,.8);
+      color: var(--gold-dark);
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .game-title {
+      color: var(--text);
+      font-size: clamp(27px, 5vw, 42px);
+      font-weight: 600;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+
+    .game-desc {
+      color: var(--text-light);
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    /* 游戏信息 */
+    .game-info {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin: 30px auto 22px;
+      flex-wrap: wrap;
+    }
+
+    .info-card {
+      min-width: 145px;
+      padding: 14px 24px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(255,255,255,.85);
+      box-shadow: 0 7px 25px rgba(160,115,130,.07);
+      text-align: center;
+    }
+
+    .info-label {
+      display: block;
+      color: var(--text-light);
+      font-size: 11px;
+      margin-bottom: 7px;
+      letter-spacing: 1px;
+    }
+
+    .info-value {
+      color: var(--text);
+      font-size: 25px;
+      font-weight: 600;
+    }
+
+    .info-value span {
+      color: var(--gold-dark);
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    /* 进度条 */
+    .progress-wrap {
+      width: min(450px, 100%);
+      margin: 0 auto 28px;
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-light);
+      font-size: 11px;
+      margin-bottom: 9px;
+    }
+
+    .progress-track {
+      height: 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.7);
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(120,80,100,.06);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #f5d59b, #f2c2ce);
+      transition: width .4s ease;
+    }
+
+    /* 游戏场地 */
+    .game-board {
+      min-height: 420px;
+      padding: 25px;
+      border-radius: 30px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255,255,255,.9), transparent 35%),
+        radial-gradient(circle at 85% 85%, rgba(255,230,237,.7), transparent 35%),
+        rgba(255,255,255,.45);
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: 0 15px 45px rgba(160,115,130,.09);
+    }
+
+    .board-decoration {
+      position: absolute;
+      color: rgba(225,184,199,.35);
+      font-size: 24px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .decoration-one {
+      left: 25px;
+      top: 25px;
+    }
+
+    .decoration-two {
+      right: 30px;
+      top: 65px;
+    }
+
+    .decoration-three {
+      right: 15%;
+      bottom: 25px;
+    }
+
+    .game-tip {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 12px;
+      margin: 5px 0 20px;
+    }
+
+    /* 跑酷游戏区域 */
+    .banana-field {
+      width: 100%;
+      height: 400px;
+      position: relative;
+      overflow: hidden;
+      background: 
+        linear-gradient(180deg, rgba(173,216,230,.15) 0%, rgba(255,240,245,.3) 70%),
+        rgba(255,250,245,.5);
+      border-radius: 15px;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    /* 地面 */
+    .ground {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(180deg, transparent, rgba(220,180,190,.15));
+      border-top: 2px dashed rgba(225,184,199,.3);
+    }
+
+    /* 跑道线条 */
+    .track-line {
+      position: absolute;
+      bottom: 78px;
+      left: 0;
+      width: 200%;
+      height: 3px;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(225,184,199,.4) 0px,
+        rgba(225,184,199,.4) 40px,
+        transparent 40px,
+        transparent 80px
+      );
+      animation: trackMove 2s linear infinite;
+    }
+
+    @keyframes trackMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* 云朵装饰 */
+    .cloud {
+      position: absolute;
+      font-size: 28px;
+      opacity: 0.4;
+      pointer-events: none;
+      animation: cloudMove linear infinite;
+    }
+
+    @keyframes cloudMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-120vw); }
+    }
+
+    /* 香蕉 */
+    .banana {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      animation: bananaMove linear;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.15));
+    }
+
+    @keyframes bananaMove {
+      from { transform: translateX(0) rotate(0deg); }
+      to { transform: translateX(-120vw) rotate(-360deg); }
+    }
+
+    .banana.collected {
+      animation: bananaCollect .35s ease forwards !important;
+    }
+
+    @keyframes bananaCollect {
+      0% { 
+        opacity: 1; 
+        transform: scale(1); 
+      }
+      50% { 
+        opacity: .8; 
+        transform: scale(1.6) rotate(180deg); 
+      }
+      100% { 
+        opacity: 0; 
+        transform: scale(.2) translateY(-50px) rotate(360deg); 
+      }
+    }
+
+    /* 障碍物 */
+    .obstacle {
+      position: absolute;
+      bottom: 78px;
+      width: 50px;
+      height: 50px;
+      font-size: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      animation: obstacleMove linear;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,.2));
+    }
+
+    @keyframes obstacleMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-120vw); }
+    }
+
+    /* 小黄人 */
+    .minion-stage {
+      position: absolute;
+      bottom: 78px;
+      left: 15%;
+      width: 85px;
+      height: 100px;
+      z-index: 10;
+      pointer-events: none;
+      transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .minion-stage.jumping {
+      bottom: 220px;
+    }
+
+    .minion-wrap {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .minion-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(120,90,100,.25));
+      animation: minionRun .4s ease-in-out infinite;
+    }
+
+    .minion-stage.jumping .minion-wrap img {
+      animation: minionJump .4s ease-in-out;
+    }
+
+    @keyframes minionRun {
+      0%, 100% { transform: translateY(0) scaleX(1); }
+      50% { transform: translateY(-4px) scaleX(0.98); }
+    }
+
+    @keyframes minionJump {
+      0% { transform: rotate(0deg) scaleY(1); }
+      25% { transform: rotate(-8deg) scaleY(1.05); }
+      50% { transform: rotate(0deg) scaleY(0.95); }
+      75% { transform: rotate(8deg) scaleY(1.05); }
+      100% { transform: rotate(0deg) scaleY(1); }
+    }
+
+    /* 控制按钮 */
+    .game-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .control-btn {
+      min-width: 100px;
+      height: 60px;
+      border-radius: 30px;
+      border: 2px solid rgba(232,200,168,.8);
+      background: rgba(255,255,255,.75);
+      color: var(--gold-dark);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      user-select: none;
+      box-shadow: 0 4px 12px rgba(160,115,130,.15);
+      padding: 0 20px;
+    }
+
+    .control-btn .icon {
+      font-size: 22px;
+    }
+
+    .control-btn:hover {
+      background: rgba(255,255,255,.95);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(160,115,130,.2);
+    }
+
+    .control-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(160,115,130,.2);
+    }
+
+    .control-btn.jump-btn {
+      background: linear-gradient(135deg, rgba(255,220,230,.85), rgba(255,240,245,.85));
+      font-size: 16px;
+      min-width: 140px;
+      height: 70px;
+    }
+
+    /* 游戏状态提示 */
+    .game-status {
+      text-align: center;
+      color: var(--text);
+      font-size: 14px;
+      margin-top: 10px;
+      min-height: 24px;
+      font-weight: 500;
+    }
+
+    .game-status.paused {
+      color: #e8b5c5;
+      font-weight: 600;
+    }
+
+    .game-status.running {
+      color: var(--gold-dark);
+    }
+
+    /* 游戏底部 */
+    .game-bottom {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .restart-btn {
+      border: 1px solid rgba(232,200,168,.8);
+      border-radius: 30px;
+      padding: 11px 25px;
+      color: var(--gold-dark);
+      background: rgba(255,255,255,.6);
+      font-size: 12px;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .restart-btn:hover {
+      background: white;
+      transform: translateY(-2px);
+    }
+
+    .game-note {
+      color: var(--text-light);
+      font-size: 11px;
+      margin-top: 15px;
+    }
+
+    /* 通关弹窗 */
+    .win-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(70,48,58,.55);
+      backdrop-filter: blur(10px);
+    }
+
+    .win-overlay.show {
+      display: flex;
+      animation: overlayIn .4s ease;
+    }
+
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .win-card {
+      width: min(470px, 100%);
+      padding: 35px 25px 30px;
+      border-radius: 28px;
+      text-align: center;
+      background: linear-gradient(145deg, #fffafd, #fff1f5);
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: 0 20px 70px rgba(60,35,45,.2);
+      position: relative;
+      animation: cardPop .55s cubic-bezier(.2,1.3,.4,1);
+    }
+
+    @keyframes cardPop {
+      from { opacity: 0; transform: translateY(25px) scale(.85); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .win-title {
+      color: var(--text);
+      font-size: 26px;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .win-subtitle {
+      color: var(--text-light);
+      font-size: 12px;
+      line-height: 2;
+    }
+
+    .win-minions {
+      height: 160px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .win-minions img {
+      height: 145px;
+      max-width: 31%;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 9px rgba(120,90,100,.12));
+      animation: winBounce 1.5s ease-in-out infinite;
+    }
+
+    .win-minions img:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .win-minions img:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes winBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-9px); }
+    }
+
+    .win-message {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 2;
+      margin-bottom: 23px;
+    }
+
+    .next-button {
+      display: inline-block;
+      padding: 13px 30px;
+      border-radius: 30px;
+      color: white;
+      background: linear-gradient(135deg, #e9bdca, #dca6b7);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 1px;
+      box-shadow: 0 7px 18px rgba(210,150,170,.25);
+      transition: .3s;
+    }
+
+    .next-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 23px rgba(210,150,170,.35);
+    }
+
+    .close-win {
+      display: block;
+      margin: 15px auto 0;
+      border: none;
+      background: none;
+      color: var(--text-light);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    /* 手机适配 */
+    @media(max-width: 600px) {
+      .game-page {
+        padding-top: 25px;
+      }
+
+      .game-header {
+        margin-top: 28px;
+      }
+
+      .game-board {
+        padding: 16px 10px;
+        min-height: 390px;
+      }
+
+      .banana-field {
+        gap: 9px;
+        min-height: 220px;
+      }
+
+      .banana {
+        width: 52px;
+        height: 52px;
+        font-size: 29px;
+      }
+
+      .minion-stage {
+        gap: 8px;
+      }
+
+      .minion-wrap {
+        width: 90px;
+        height: 125px;
+      }
+
+      .info-card {
+        min-width: 125px;
+        padding: 12px 16px;
+      }
+
+      .win-card {
+        padding: 28px 17px;
+      }
+
+      .win-minions {
+        height: 125px;
+      }
+
+      .win-minions img {
+        height: 115px;
+      }
+    }
+  </style>
+</head>
+
+<body data-bgm-track="game">
+  <main class="game-page">
+
+    <a class="back-link" href="index.html">← 返回生日首页</a>
+
+    <header class="game-header">
+      <div class="game-tag">BANANA COLLECTION GAME</div>
+      <h1 class="game-title">香蕉跑酷大作战 🍌</h1>
+      <p class="game-desc">
+        帮助 Bob 左右移动接住从天而降的香蕉！<br>
+        收集 11 根香蕉，解锁专属生日惊喜吧～香蕉会越掉越快哦！
+      </p>
+    </header>
+
+    <!-- 游戏计数 -->
+    <section class="game-info">
+      <div class="info-card">
+        <span class="info-label">已收集香蕉</span>
+        <div class="info-value">
+          <span id="score">0</span>
+          <span>/ 11 根</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <span class="info-label">剩余香蕉</span>
+        <div class="info-value">
+          <span id="remaining">11</span>
+          <span>根</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 进度条 -->
+    <div class="progress-wrap">
+      <div class="progress-text">
+        <span>香蕉收集进度</span>
+        <span id="progressText">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- 游戏场地 -->
+    <section class="game-board">
+      <span class="board-decoration decoration-one">♡</span>
+      <span class="board-decoration decoration-two">✦</span>
+      <span class="board-decoration decoration-three">♡</span>
+
+      <p class="game-tip">电脑：按空格键跳跃 · 手机：点击屏幕跳跃</p>
+
+      <div class="banana-field" id="bananaField">
+        <!-- 跑道线 -->
+        <div class="track-line"></div>
+        
+        <!-- 地面 -->
+        <div class="ground"></div>
+
+        <!-- 小黄人 -->
+        <div class="minion-stage" id="minionStage">
+          <div class="minion-wrap">
+            <img src="assets/images/minions/kevin.png" alt="Bob" id="minionImg">
+          </div>
+        </div>
+      </div>
+
+      <!-- 游戏控制按钮 -->
+      <div class="game-controls">
+        <button class="control-btn" id="pauseBtn" aria-label="暂停/继续">
+          <span class="icon">⏸</span>
+          <span>暂停</span>
+        </button>
+        <button class="control-btn jump-btn" id="jumpBtn" aria-label="跳跃">
+          <span class="icon">⬆</span>
+          <span>跳跃 (空格)</span>
+        </button>
+      </div>
+
+      <div class="game-status" id="gameStatus"></div>
+    </section>
+
+    <div class="game-bottom">
+      <button class="restart-btn" id="restartBtn">↻ 重新开始</button>
+      <p class="game-note">💡 提示：跳跃收集香蕉，避开障碍物！难度会逐渐提升～</p>
+    </div>
+
+  </main>
+
+  <!-- 通关弹窗 -->
+  <div class="win-overlay" id="winOverlay">
+    <div class="win-card">
+      <h2 class="win-title">任务完成！</h2>
+      <p class="win-subtitle">11 根香蕉全部收集成功！</p>
+
+      <div class="win-minions">
+        <img src="assets/images/minions/kevin.png" alt="Kevin">
+        <img src="assets/images/minions/bob.png" alt="Bob">
+        <img src="assets/images/minions/stuart.png" alt="Stuart">
+      </div>
+
+      <p class="win-message">
+        Bananaaaaa！🍌<br>
+        你的反应速度真是太棒了！<br>
+        接下来还有一份特别的祝福等着你～
+      </p>
+
+      <a href="ox-bless.html" class="next-button">打开下一份生日祝福 →</a>
+      <button class="close-win" id="closeWin">我还想再玩一次</button>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+
+  <!-- 背景音乐 - 小黄人主题 -->
+  <audio id="backgroundMusic" loop>
+    <source src="assets/music/minions.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const TOTAL = 11;
+    const GAME_WIDTH = 100; // 游戏区域宽度（百分比）
+    const MINION_LEFT = 15; // 小黄人固定位置
+    const MINION_WIDTH = 85; // 小黄人宽度
+    const MINION_HEIGHT = 100; // 小黄人高度
+    const GROUND_HEIGHT = 78; // 地面高度
+    const JUMP_HEIGHT = 142; // 跳跃高度（像素）
+    const JUMP_DURATION = 400; // 跳跃时长（毫秒）
+    
+    const ITEM_SPAWN_INTERVAL = 1800; // 初始物品生成间隔（毫秒）
+    const MIN_SPAWN_INTERVAL = 1000; // 最小生成间隔
+    const ITEM_SPEED = 3000; // 初始物品移动速度（毫秒）
+    const MIN_ITEM_SPEED = 1800; // 最快移动速度
+
+    const bananaField = document.getElementById("bananaField");
+    const minionStage = document.getElementById("minionStage");
+    const scoreElement = document.getElementById("score");
+    const remainingElement = document.getElementById("remaining");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const winOverlay = document.getElementById("winOverlay");
+    const gameStatus = document.getElementById("gameStatus");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const jumpBtn = document.getElementById("jumpBtn");
+
+    let score = 0;
+    let gameRunning = false;
+    let gamePaused = false;
+    let gameFinished = false;
+    let isJumping = false;
+    let canJump = true;
+
+    let items = []; // 所有物品（香蕉和障碍物）
+    let spawnTimer = null;
+    let checkTimer = null;
+    let cloudTimer = null;
+    let currentSpawnInterval = ITEM_SPAWN_INTERVAL;
+    let currentSpeed = ITEM_SPEED;
+
+    // 开始游戏
+    function startGame() {
+      score = 0;
+      gameRunning = true;
+      gamePaused = false;
+      gameFinished = false;
+      isJumping = false;
+      canJump = true;
+      currentSpawnInterval = ITEM_SPAWN_INTERVAL;
+      currentSpeed = ITEM_SPEED;
+      items = [];
+
+      // 清空旧物品
+      document.querySelectorAll('.banana, .obstacle, .cloud').forEach(el => el.remove());
+
+      updateProgress();
+      gameStatus.textContent = "跑起来！收集香蕉！";
+      gameStatus.classList.add('running');
+      gameStatus.classList.remove('paused');
+
+      // 生成云朵装饰
+      spawnClouds();
+      
+      // 开始生成物品
+      startSpawning();
+      startChecking();
+    }
+
+    // 生成云朵装饰
+    function spawnClouds() {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          if (!gameRunning) return;
+          const cloud = document.createElement("div");
+          cloud.className = "cloud";
+          cloud.textContent = "☁️";
+          cloud.style.top = (Math.random() * 30 + 10) + "%";
+          cloud.style.left = "100vw";
+          cloud.style.animationDuration = (15 + Math.random() * 10) + "s";
+          bananaField.appendChild(cloud);
+
+          setTimeout(() => cloud.remove(), 30000);
+        }, i * 5000);
+      }
+
+      if (gameRunning && !gameFinished) {
+        cloudTimer = setTimeout(spawnClouds, 15000);
+      }
+    }
+
+    // 生成物品（香蕉或障碍物）
+    function spawnItem() {
+      if (!gameRunning || gamePaused || gameFinished) return;
+
+      // 70% 香蕉，30% 障碍物
+      const isBanana = Math.random() < 0.7;
+      
+      const item = document.createElement("div");
+      item.className = isBanana ? "banana" : "obstacle";
+      item.textContent = isBanana ? "🍌" : "🪨";
+      
+      // 随机高度（地面、中等、高空）
+      const heights = [
+        GROUND_HEIGHT, // 地面
+        GROUND_HEIGHT + 80, // 中等高度
+        GROUND_HEIGHT + 140 // 高空
+      ];
+      
+      const randomHeight = heights[Math.floor(Math.random() * heights.length)];
+      item.style.bottom = randomHeight + "px";
+      item.style.right = "-60px";
+      item.style.animationDuration = currentSpeed + "ms";
+
+      bananaField.appendChild(item);
+      
+      const itemData = {
+        element: item,
+        type: isBanana ? 'banana' : 'obstacle',
+        collected: false,
+        height: randomHeight
+      };
+      
+      items.push(itemData);
+
+      // 物品移出屏幕后移除
+      setTimeout(() => {
+        if (item.parentNode && !itemData.collected) {
+          item.remove();
+          items = items.filter(i => i !== itemData);
+        }
+      }, currentSpeed + 500);
+    }
+
+    // 持续生成物品
+    function startSpawning() {
+      if (spawnTimer) clearInterval(spawnTimer);
+      
+      // 先生成一个
+      setTimeout(() => spawnItem(), 500);
+      
+      spawnTimer = setInterval(() => {
+        if (!gamePaused && !gameFinished) {
+          spawnItem();
+        }
+      }, currentSpawnInterval);
+    }
+
+    // 检查碰撞
+    function startChecking() {
+      if (checkTimer) clearInterval(checkTimer);
+      
+      checkTimer = setInterval(() => {
+        if (gamePaused || gameFinished) return;
+        checkCollisions();
+      }, 50);
+    }
+
+    // 碰撞检测
+    function checkCollisions() {
+      const minionRect = minionStage.getBoundingClientRect();
+      const minionBottom = parseInt(getComputedStyle(minionStage).bottom);
+
+      items.forEach(itemData => {
+        if (itemData.collected) return;
+
+        const itemRect = itemData.element.getBoundingClientRect();
+
+        // 检查水平重叠
+        const collisionX = itemRect.left < minionRect.right - 15 && 
+                          itemRect.right > minionRect.left + 15;
+
+        if (collisionX) {
+          // 检查垂直重叠
+          const itemBottom = itemData.height;
+          const itemTop = itemBottom + 40;
+          
+          const minionTop = minionBottom + MINION_HEIGHT;
+          
+          const collisionY = itemBottom < minionTop - 10 && 
+                            itemTop > minionBottom + 10;
+
+          if (collisionY) {
+            if (itemData.type === 'banana') {
+              collectBanana(itemData);
+            } else if (itemData.type === 'obstacle') {
+              hitObstacle();
+            }
+          }
+        }
+      });
+    }
+
+    // 收集香蕉
+    function collectBanana(itemData) {
+      if (itemData.collected) return;
+
+      itemData.collected = true;
+      itemData.element.classList.add("collected");
+      score++;
+
+      // 增加难度
+      if (score % 2 === 0) {
+        currentSpawnInterval = Math.max(
+          MIN_SPAWN_INTERVAL, 
+          currentSpawnInterval - 150
+        );
+        currentSpeed = Math.max(
+          MIN_ITEM_SPEED,
+          currentSpeed - 150
+        );
+        startSpawning(); // 重启生成器以应用新速度
+      }
+
+      updateProgress();
+
+      setTimeout(() => {
+        if (itemData.element.parentNode) {
+          itemData.element.remove();
+        }
+        items = items.filter(i => i !== itemData);
+      }, 350);
+
+      if (score === TOTAL) {
+        gameFinished = true;
+        stopGame();
+        setTimeout(showVictory, 600);
+      }
+    }
+
+    // 撞到障碍物
+    function hitObstacle() {
+      if (gameFinished) return;
+      
+      // 游戏结束
+      gameFinished = true;
+      gameStatus.textContent = "撞到障碍物了！点击重新开始";
+      gameStatus.style.color = "#dc6b6b";
+      
+      // 小黄人晃动效果
+      minionStage.style.animation = "shake 0.5s";
+      setTimeout(() => {
+        minionStage.style.animation = "";
+      }, 500);
+
+      stopGame();
+    }
+
+    // 添加晃动动画
+    const shakeStyle = document.createElement("style");
+    shakeStyle.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px) rotate(-5deg); }
+        75% { transform: translateX(10px) rotate(5deg); }
+      }
+    `;
+    document.head.appendChild(shakeStyle);
+
+    // 更新进度
+    function updateProgress() {
+      const percentage = Math.round(score / TOTAL * 100);
+
+      scoreElement.textContent = score;
+      remainingElement.textContent = TOTAL - score;
+      progressFill.style.width = percentage + "%";
+      progressText.textContent = percentage + "%";
+    }
+
+    // 跳跃功能
+    function jump() {
+      if (!gameRunning || gamePaused || gameFinished || !canJump || isJumping) {
+        return;
+      }
+
+      isJumping = true;
+      canJump = false;
+      minionStage.classList.add('jumping');
+
+      setTimeout(() => {
+        minionStage.classList.remove('jumping');
+        isJumping = false;
+        
+        // 短暂冷却
+        setTimeout(() => {
+          canJump = true;
+        }, 100);
+      }, JUMP_DURATION);
+    }
+
+    // 键盘控制
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" || e.key === " ") {
+        e.preventDefault();
+        
+        if (!gameRunning && !gameFinished) {
+          startGame();
+        } else {
+          jump();
+        }
+      }
+    });
+
+    // 点击屏幕跳跃
+    bananaField.addEventListener("click", () => {
+      if (!gameRunning && !gameFinished) {
+        startGame();
+      } else {
+        jump();
+      }
+    });
+
+    // 按钮控制
+    jumpBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!gameRunning && !gameFinished) {
+        startGame();
+      } else {
+        jump();
+      }
+    });
+
+    // 暂停/继续
+    pauseBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      togglePause();
+    });
+
+    function togglePause() {
+      if (!gameRunning || gameFinished) {
+        if (!gameRunning && !gameFinished) startGame();
+        return;
+      }
+
+      gamePaused = !gamePaused;
+
+      if (gamePaused) {
+        pauseBtn.innerHTML = '<span class="icon">▶</span><span>继续</span>';
+        gameStatus.textContent = "游戏已暂停";
+        gameStatus.classList.add('paused');
+        gameStatus.classList.remove('running');
+        
+        // 暂停所有动画
+        document.querySelectorAll('.banana, .obstacle, .track-line, .cloud').forEach(el => {
+          el.style.animationPlayState = 'paused';
+        });
+      } else {
+        pauseBtn.innerHTML = '<span class="icon">⏸</span><span>暂停</span>';
+        gameStatus.textContent = "继续加油！";
+        gameStatus.classList.remove('paused');
+        gameStatus.classList.add('running');
+        
+        // 恢复所有动画
+        document.querySelectorAll('.banana, .obstacle, .track-line, .cloud').forEach(el => {
+          el.style.animationPlayState = 'running';
+        });
+      }
+    }
+
+    // 停止游戏
+    function stopGame() {
+      gameRunning = false;
+      if (spawnTimer) clearInterval(spawnTimer);
+      if (checkTimer) clearInterval(checkTimer);
+      if (cloudTimer) clearTimeout(cloudTimer);
+    }
+
+    // 通关
+    function showVictory() {
+      winOverlay.classList.add("show");
+      document.body.style.overflow = "hidden";
+      createVictoryHearts();
+    }
+
+    // 通关爱心
+    function createVictoryHearts() {
+      const symbols = ["♡", "✦", "🍌", "♥"];
+
+      for (let i = 0; i < 22; i++) {
+        const heart = document.createElement("span");
+        heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        heart.style.position = "fixed";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.top = "-30px";
+        heart.style.zIndex = "1100";
+        heart.style.pointerEvents = "none";
+        heart.style.fontSize = (15 + Math.random() * 14) + "px";
+        heart.style.color = "#e8b5c5";
+        heart.style.animation = `fallHeart ${2.5 + Math.random() * 2}s linear forwards`;
+
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+      }
+    }
+
+    // 添加飘落动画
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes fallHeart {
+        from { transform: translateY(0) rotate(0); opacity: 0; }
+        10% { opacity: 1; }
+        to { transform: translateY(110vh) rotate(180deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 重新开始
+    function restartGame() {
+      stopGame();
+      
+      // 清理所有物品
+      document.querySelectorAll('.banana, .obstacle, .cloud').forEach(el => el.remove());
+      items = [];
+
+      winOverlay.classList.remove("show");
+      document.body.style.overflow = "";
+      
+      pauseBtn.innerHTML = '<span class="icon">⏸</span><span>暂停</span>';
+      gameStatus.style.color = "";
+      
+      minionStage.classList.remove('jumping');
+      
+      setTimeout(() => {
+        startGame();
+      }, 100);
+    }
+
+    document.getElementById("restartBtn").addEventListener("click", restartGame);
+    document.getElementById("closeWin").addEventListener("click", restartGame);
+
+    // 初始化
+    updateProgress();
+    gameStatus.textContent = "点击屏幕或按空格键开始游戏！";
+  </script>
+</body>
+</html>

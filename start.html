@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8d7e0">
+<title>姐姐的生日小世界 · 11.25</title>
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #f8d7e0;
+    }
+
+    /* 所有子页面都在这里加载，音乐放在这一层，所以跳页音乐不会断 */
+    #contentFrame {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #fff;
+    }
+
+    /* 入场启动页（同时解决浏览器“必须先点一下才出声音”的限制） */
+    #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at 50% 28%, #fff4f8 0%, #f8d7e0 65%, #f3c8d5 100%);
+        transition: opacity .55s ease, visibility .55s ease;
+    }
+
+    #splash.hide {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .splash-card {
+        text-align: center;
+        padding: 46px 40px 40px;
+        border-radius: 26px;
+        background: rgba(255, 255, 255, .72);
+        box-shadow: 0 24px 60px rgba(190, 120, 140, .18);
+        backdrop-filter: blur(10px);
+        max-width: 88vw;
+        font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", serif;
+        color: #6b4a52;
+        animation: splashIn .8s ease both;
+    }
+
+    @keyframes splashIn {
+        from { opacity: 0; transform: translateY(18px) scale(.97); }
+        to   { opacity: 1; transform: none; }
+    }
+
+    .splash-kicker {
+        margin: 0 0 14px;
+        font-size: 12px;
+        letter-spacing: .28em;
+        color: #b98a97;
+    }
+
+    .splash-title {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: .06em;
+    }
+
+    .splash-sub {
+        margin: 14px 0 30px;
+        font-size: 14px;
+        color: #9c7b84;
+        line-height: 1.9;
+    }
+
+    #splashBtn {
+        border: 0;
+        cursor: pointer;
+        padding: 14px 42px;
+        border-radius: 999px;
+        font-size: 15px;
+        letter-spacing: .12em;
+        color: #fff;
+        background: linear-gradient(135deg, #f3a8bd 0%, #e88ba6 100%);
+        box-shadow: 0 12px 26px rgba(231, 139, 166, .38);
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    #splashBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 32px rgba(231, 139, 166, .48);
+    }
+
+    #splashBtn:active {
+        transform: translateY(0);
+    }
+
+    /* 悬浮音乐开关：只有当前页没有自带音乐按钮时才出现 */
+    #floatMusic {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        display: none;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1;
+        color: #6b4a52;
+        background: rgba(255, 255, 255, .78);
+        box-shadow: 0 8px 20px rgba(160, 100, 120, .22);
+        backdrop-filter: blur(8px);
+        z-index: 9998;
+        transition: opacity .25s ease, transform .25s ease;
+    }
+
+    #floatMusic:hover {
+        transform: scale(1.06);
+    }
+
+    @media (max-width: 480px) {
+        .splash-card { padding: 36px 26px 32px; }
+        .splash-title { font-size: 24px; }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- 全局唯一的音乐播放器：整站就这一个，所以翻页不会重新开始 -->
+<audio id="shellMusic" loop preload="auto"></audio>
+
+<!-- 所有子页面在这里面跳转 -->
+<iframe id="contentFrame" name="contentFrame" title="生日小世界"></iframe>
+
+<!-- 没有音乐按钮的页面，给一个悬浮开关 -->
+<button id="floatMusic" type="button" aria-label="切换音乐">♪</button>
+
+<!-- 入场页 -->
+<div id="splash">
+    <div class="splash-card">
+        <p class="splash-kicker">A LITTLE WORLD FOR YOU</p>
+        <h1 class="splash-title">生日快乐，姐姐</h1>
+        <p class="splash-sub">
+            有一点点小声的音乐，<br>
+            和一点点只属于你的小世界。
+        </p>
+        <button id="splashBtn" type="button">开启惊喜 ♪</button>
+    </div>
+</div>
+
+<script>
+(function () {
+    /* ==========================================================
+       1. 配置区（只改这里就够了）
+       ========================================================== */
+
+    // 每首歌一条：restart = true 表示每次进入都从头开始
+    var TRACKS = {
+        normal: { src: "assets/music/birthday.mp3", restart: false },  // 生日歌
+        game:   { src: "assets/music/minions.mp3",  restart: true  }   // 小黄人游戏页专用
+    };
+
+    // 打开 start.html 时默认加载哪一页
+    var ENTRY = "password.html";
+
+    /* ==========================================================
+       2. 元素
+       ========================================================== */
+
+    var audio       = document.getElementById("shellMusic");
+    var frame       = document.getElementById("contentFrame");
+    var splash      = document.getElementById("splash");
+    var splashBtn   = document.getElementById("splashBtn");
+    var floatBtn    = document.getElementById("floatMusic");
+
+    var savedTime   = { normal: 0, game: 0 };   // 每首歌各自的播放进度
+    var currentKey  = null;
+    var playing     = false;
+    var splashDone  = false;
+    var pendingSeek = 0;
+    var pageHasToggle = false;
+    var needGesture    = false;   // 浏览器拦截了自动播放时置 true
+
+    /* ==========================================================
+       3. 播放控制
+       ========================================================== */
+
+    audio.volume = 0.35;
+
+    // 状态以媒体元素自己的事件为准，比 await play() 更可靠
+    audio.addEventListener("play", function () {
+        playing = true;
+        needGesture = false;
+        paintFloat();
+        broadcast();
+    });
+    audio.addEventListener("pause", function () {
+        playing = false;
+        paintFloat();
+        broadcast();
+    });   // 和各页原来的音量一致
+
+    audio.addEventListener("loadedmetadata", function () {
+        if (pendingSeek > 0) {
+            try { audio.currentTime = pendingSeek; } catch (e) {}
+            pendingSeek = 0;
+        }
+    });
+
+    function paintFloat() {
+        var show = splashDone && (needGesture || !pageHasToggle);
+        if (!show) {
+            floatBtn.style.display = "none";
+            return;
+        }
+        floatBtn.style.display = "block";
+        floatBtn.textContent = playing ? "♫" : "♪";
+        floatBtn.style.title = playing ? "点击暂停音乐" : "点击播放音乐";
+    }
+
+    function broadcast() {
+        try {
+            frame.contentWindow.postMessage({
+                type: "bgm:state",
+                playing: playing,
+                track: currentKey,
+                hasToggle: pageHasToggle
+            }, "*");
+        } catch (e) {}
+    }
+
+    function playNow() {
+        var p = audio.play();
+        if (p && typeof p.then === "function") {
+            p.then(function () {
+                playing = true;
+                needGesture = false;
+                paintFloat();
+                broadcast();
+            }).catch(function () {
+                playing = false;
+                needGesture = true;
+                paintFloat();
+                broadcast();
+            });
+        }
+    }
+
+    function toggle() {
+        if (!currentKey) {
+            switchTrack("normal");
+            return;
+        }
+        if (audio.paused) {
+            playNow();
+        } else {
+            audio.pause();
+            playing = false;
+            paintFloat();
+            broadcast();
+        }
+    }
+
+    // 切歌：记住上一首播到哪，换页回来接着播
+    function switchTrack(key) {
+        if (!TRACKS[key]) return;
+
+        if (key === currentKey) {
+            if (audio.paused) playNow();
+            return;
+        }
+
+        if (currentKey) {
+            savedTime[currentKey] = audio.currentTime || 0;
+            audio.pause();
+            playing = false;
+        }
+
+        currentKey = key;
+        pendingSeek = TRACKS[key].restart ? 0 : (savedTime[key] || 0);
+        audio.src = TRACKS[key].src;
+        audio.load();
+
+        playNow();   // 若被浏览器拦截，下次交互时会自动补播
+    }
+
+    /* ==========================================================
+       4. 接收子页面的消息
+       ========================================================== */
+
+    window.addEventListener("message", function (e) {
+        var d = e.data || {};
+
+        if (d.type === "bgm:track") {
+            if ("hasToggle" in d) {
+                pageHasToggle = !!d.hasToggle;
+                paintFloat();
+            }
+            switchTrack(d.track);
+        } else if (d.type === "bgm:toggle") {
+            toggle();
+        } else if (d.type === "bgm:query") {
+            broadcast();
+        } else if (d.type === "bgm:hasToggle") {
+            pageHasToggle = !!d.value;
+            paintFloat();
+        }
+    });
+
+    /* ==========================================================
+       5. 启动
+       ========================================================== */
+
+    var bootPage = (location.hash || "").replace(/^#/, "");
+    frame.src = bootPage || ENTRY;
+
+    try { sessionStorage.removeItem("bgmShellBoot"); } catch (e) {}
+
+    frame.addEventListener("load", function () {
+        paintFloat();
+        broadcast();
+    });
+
+    splashBtn.addEventListener("click", function () {
+        splash.classList.add("hide");
+        splashDone = true;
+
+        if (currentKey) {
+            playNow();
+        } else {
+            switchTrack("normal");
+        }
+
+        paintFloat();
+        try { frame.contentWindow.focus(); } catch (e) {}
+    });
+
+    floatBtn.addEventListener("click", toggle);
+
+    // 外壳自己的点击也算一次用户手势，可以补播
+    document.addEventListener("click", function () {
+        if (currentKey && audio.paused && !TRACKS[currentKey].restart) playNow();
+    });
+})();
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8d7e0">
+
+    <title>姐姐的生日小世界 · 11.25</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 页面背景 */
+        .home-page {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 105px 20px 45px;
+            isolation: isolate;
+        }
+
+        .ribbon-decoration {
+            position: fixed;
+            pointer-events: none;
+            z-index: -1;
+            opacity: .14;
+        }
+
+        .ribbon-decoration.left {
+            top: 13%;
+            left: -95px;
+            width: 280px;
+            height: 220px;
+            border: 18px solid #e5b7c6;
+            border-radius: 48% 52% 43% 57%;
+            transform: rotate(-32deg);
+        }
+
+        .ribbon-decoration.right {
+            right: -100px;
+            bottom: 8%;
+            width: 310px;
+            height: 230px;
+            border: 18px solid #e8c8a8;
+            border-radius: 50%;
+            transform: rotate(35deg);
+        }
+
+        /* 页面标题 */
+        .home-heading {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .home-heading .eyebrow {
+            margin-bottom: 17px;
+        }
+
+        .home-heading h1 {
+            font-size: clamp(23px, 4vw, 32px);
+            font-weight: 400;
+            letter-spacing: 3px;
+            color: #896875;
+        }
+
+        .home-heading p {
+            font-size: 13px;
+            color: #b99da8;
+            margin-top: 13px;
+            letter-spacing: 1px;
+        }
+
+        /* 礼盒区域 */
+        .gift-stage {
+            position: relative;
+            width: 340px;
+            height: 335px;
+            margin: 12px auto 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .gift-stage:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 8px;
+            border-radius: 30px;
+        }
+
+        .gift-shadow {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            width: 245px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(171, 115, 136, .19);
+            filter: blur(17px);
+            transform: translateX(-50%);
+            transition: all 1s var(--ease);
+        }
+
+        .gift-box {
+            width: 260px;
+            height: 235px;
+            position: relative;
+            margin-top: 45px;
+            filter: drop-shadow(0 17px 20px rgba(175,119,139,.16));
+            transition: transform .8s var(--ease);
+        }
+
+        .gift-stage:hover .gift-box {
+            transform: translateY(-5px);
+        }
+
+        /* 礼盒主体 */
+        .gift-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 260px;
+            height: 165px;
+            border-radius: 8px 8px 15px 15px;
+            background: linear-gradient(
+                115deg,
+                #e9b6c5 0%,
+                #f6d4dd 38%,
+                #e8b5c6 100%
+            );
+            box-shadow:
+                inset 9px 0 15px rgba(255,255,255,.22),
+                inset -8px 0 15px rgba(181,116,139,.1);
+            overflow: hidden;
+        }
+
+        .gift-body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 110px;
+            width: 39px;
+            background: linear-gradient(
+                90deg,
+                #e7c49e,
+                #f6e0bd,
+                #d9b28a
+            );
+            box-shadow: 0 0 9px rgba(255,255,255,.2);
+        }
+
+        .gift-body::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                130deg,
+                rgba(255,255,255,.2),
+                transparent 42%
+            );
+            pointer-events: none;
+        }
+
+        /* 烫金数字 */
+        .gift-number {
+            position: absolute;
+            top: 44px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 3;
+            color: #b78d5e;
+            font-family: 'Inter', sans-serif;
+            font-size: 29px;
+            font-weight: 500;
+            letter-spacing: 5px;
+            text-shadow:
+                0 1px 0 #fff0d6,
+                0 2px 3px rgba(151,111,67,.25);
+        }
+
+        .gift-number::after {
+            content: "HAPPY BIRTHDAY";
+            display: block;
+            font-size: 7px;
+            letter-spacing: 3px;
+            margin-top: 6px;
+            color: #b99976;
+        }
+
+        /* 盒盖 */
+        .gift-lid {
+            position: absolute;
+            z-index: 5;
+            width: 280px;
+            height: 67px;
+            left: -10px;
+            top: 30px;
+            border-radius: 10px;
+            background: linear-gradient(
+                110deg,
+                #e7b3c3,
+                #f7dbe2 45%,
+                #e8b5c5
+            );
+            box-shadow:
+                inset 0 6px 10px rgba(255,255,255,.28),
+                0 5px 10px rgba(163,108,129,.13);
+            transform-origin: 50% 100%;
+            transition: transform 1.15s var(--ease);
+        }
+
+        .gift-lid::before {
+            content: "";
+            position: absolute;
+            left: 118px;
+            top: 0;
+            width: 43px;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                #dcb38e,
+                #f6dfbd,
+                #d7ad84
+            );
+        }
+
+        .gift-lid::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(
+                135deg,
+                rgba(255,255,255,.32),
+                transparent 55%
+            );
+        }
+
+        /* 丝带蝴蝶结 */
+        .gift-bow {
+            position: absolute;
+            top: -26px;
+            left: 50%;
+            width: 105px;
+            height: 54px;
+            transform: translateX(-50%);
+            z-index: 7;
+        }
+
+        .bow-loop {
+            position: absolute;
+            top: 5px;
+            width: 49px;
+            height: 34px;
+            background: linear-gradient(135deg,#f5dfc0,#d6ae82);
+            border: 1px solid rgba(255,255,255,.6);
+        }
+
+        .bow-loop.left {
+            left: 1px;
+            border-radius: 90% 15% 70% 25%;
+            transform: rotate(23deg);
+        }
+
+        .bow-loop.right {
+            right: 1px;
+            border-radius: 15% 90% 25% 70%;
+            transform: rotate(-23deg);
+        }
+
+        .bow-center {
+            position: absolute;
+            top: 17px;
+            left: 43px;
+            width: 20px;
+            height: 19px;
+            border-radius: 7px;
+            background: linear-gradient(135deg,#f9e7c9,#caa276);
+            z-index: 2;
+        }
+
+        /* 打开后的动画 */
+        .gift-stage.opened .gift-lid {
+            transform: translateY(-95px) rotate(-13deg);
+        }
+
+        .gift-stage.opened .gift-shadow {
+            width: 280px;
+            opacity: .6;
+        }
+
+        .gift-stage.opened .gift-box {
+            transform: translateY(5px);
+        }
+
+        /* 礼盒打开提示 */
+        .gift-tip {
+            margin-top: -2px;
+            color: #b18f9e;
+            font-size: 12px;
+            letter-spacing: 2px;
+            animation: tipBreath 2.8s ease-in-out infinite;
+        }
+
+        @keyframes tipBreath {
+            0%, 100% { opacity: .55; }
+            50% { opacity: 1; }
+        }
+
+        /* 礼盒浮出粒子 */
+        .gift-particle {
+            position: absolute;
+            z-index: 8;
+            pointer-events: none;
+            animation: particleRise 2.7s ease-out forwards;
+        }
+
+        @keyframes particleRise {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(.6) rotate(0);
+            }
+            20% { opacity: .9; }
+            100% {
+                opacity: 0;
+                transform: translateY(-180px) scale(1.3) rotate(35deg);
+            }
+        }
+
+        /* 欢迎文案 */
+        .welcome-message {
+            min-height: 42px;
+            margin-top: 8px;
+            text-align: center;
+            font-size: clamp(16px, 3vw, 19px);
+            color: #956d7d;
+            font-weight: 400;
+            letter-spacing: 1px;
+            line-height: 1.8;
+            opacity: 0;
+            transition: opacity .7s ease-out;
+        }
+
+        .welcome-message.visible {
+            opacity: 1;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            height: 16px;
+            width: 1px;
+            margin-left: 4px;
+            background: #d7a7b7;
+            vertical-align: middle;
+            animation: cursorBlink 1s ease-in-out infinite;
+        }
+
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* 导航区域 */
+        .navigation-section {
+            width: min(650px, 100%);
+            margin-top: 28px;
+            opacity: 0;
+            transform: translateY(18px);
+            pointer-events: none;
+            transition: all .9s var(--ease);
+        }
+
+        .navigation-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .navigation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .nav-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-height: 88px;
+            padding: 17px 18px;
+            border-radius: 21px;
+            text-decoration: none;
+            background: rgba(255,255,255,.53);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(255,255,255,.85);
+            box-shadow: 0 10px 30px rgba(181,126,145,.09);
+            transition: all .4s var(--ease);
+            opacity: 0;
+            transform: translateY(14px);
+        }
+
+        .navigation-section.visible .nav-card {
+            animation: cardAppear .75s var(--ease) forwards;
+        }
+
+        .navigation-section.visible .nav-card:nth-child(2) {
+            animation-delay: .12s;
+        }
+
+        .navigation-section.visible .nav-card:nth-child(3) {
+            animation-delay: .24s;
+        }
+
+        .navigation-section.visible .nav-card:nth-child(4) {
+            animation-delay: .36s;
+        }
+
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-card:hover {
+            transform: translateY(-6px);
+            background: rgba(255,255,255,.84);
+            box-shadow: 0 17px 35px rgba(181,126,145,.16);
+        }
+
+        .nav-icon {
+            flex-shrink: 0;
+            width: 43px;
+            height: 43px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg,#fff0f3,#f4dce5);
+            color: #b8899a;
+            font-size: 19px;
+        }
+
+        .nav-card:nth-child(2) .nav-icon {
+            background: #fff5d9;
+            color: #b89a53;
+        }
+
+        .nav-card:nth-child(3) .nav-icon {
+            background: #f5ece6;
+            color: #b38b7b;
+        }
+
+        .nav-card:nth-child(4) .nav-icon {
+            background: #f8e9eb;
+            color: #c48b9b;
+        }
+
+        .nav-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-text h3 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #846471;
+            margin-bottom: 6px;
+        }
+
+        .nav-text p {
+            font-size: 10px;
+            color: #bba2ac;
+            letter-spacing: .3px;
+        }
+
+        .nav-arrow {
+            color: #c8a9b5;
+            font-size: 17px;
+        }
+
+        /* 底部文字 */
+        .home-footer {
+            margin-top: 34px;
+            color: #b79ba5;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-align: center;
+        }
+
+        .home-footer span {
+            color: #c9a77f;
+        }
+
+        /* 小牛彩蛋贴纸 */
+        .cow-sticker {
+            position: absolute;
+            right: max(calc((100vw - 760px) / 2), 25px);
+            top: 290px;
+            z-index: 10;
+            width: 72px;
+            height: 72px;
+            padding: 4px;
+            border: 1px solid rgba(255,255,255,.8);
+            border-radius: 50%;
+            background: rgba(255,255,255,.42);
+            box-shadow: 0 8px 22px rgba(175,124,142,.12);
+            cursor: pointer;
+            transition: transform .4s var(--ease);
+            animation: stickerFloat 4.5s ease-in-out infinite;
+        }
+
+        .cow-sticker:hover {
+            transform: scale(1.1) rotate(-6deg);
+        }
+
+        .cow-sticker svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes stickerFloat {
+            0%,100% { margin-top: 0; }
+            50% { margin-top: -7px; }
+        }
+
+        /* 彩蛋弹窗 */
+        .easter-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: rgba(105,72,85,.16);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all .5s ease-out;
+        }
+
+        .easter-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .easter-card {
+            width: min(410px, 100%);
+            padding: 35px 25px;
+            text-align: center;
+            border-radius: 27px;
+            background: rgba(255,250,251,.88);
+            border: 1px solid white;
+            box-shadow: 0 25px 70px rgba(135,91,109,.2);
+            transform: translateY(20px) scale(.97);
+            transition: transform .6s var(--ease);
+        }
+
+        .easter-overlay.show .easter-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .easter-card h2 {
+            font-size: 20px;
+            font-weight: 400;
+            color: #8d6977;
+            margin: 14px 0;
+        }
+
+        .easter-card p {
+            font-size: 13px;
+            line-height: 2;
+            color: #af929e;
+        }
+
+        /* 电影原版小黄人展示 */
+        .minion-trio {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 8px;
+            height: 165px;
+            margin-bottom: 10px;
+        }
+
+        .minion-character {
+            display: block;
+            width: 92px;
+            height: 145px;
+            object-fit: contain;
+            object-position: center bottom;
+            filter: drop-shadow(0 7px 9px rgba(130,95,105,.13));
+            animation: minionWave 2.8s ease-in-out infinite;
+        }
+
+        /* 中间的 Bob 稍微大一点 */
+        .minion-character:nth-child(2) {
+            height: 155px;
+            animation-delay: .2s;
+        }
+
+        .minion-character:nth-child(3) {
+            animation-delay: .4s;
+        }
+
+        @keyframes minionWave {
+            0%,100% {
+                transform: translateY(0) rotate(0);
+            }
+
+            50% {
+                transform: translateY(-7px) rotate(2deg);
+            }
+        }
+
+        .easter-close {
+            margin-top: 20px;
+        }
+
+        /* 手机适配 */
+        @media(max-width:600px) {
+            .home-page {
+                padding: 90px 18px 35px;
+            }
+
+            .gift-stage {
+                transform: scale(.88);
+                margin-top: -5px;
+                margin-bottom: -20px;
+            }
+
+            .cow-sticker {
+                top: 235px;
+                right: 14px;
+                width: 58px;
+                height: 58px;
+            }
+
+            .navigation-grid {
+                gap: 10px;
+            }
+
+            .nav-card {
+                padding: 13px 11px;
+                min-height: 79px;
+                gap: 9px;
+                border-radius: 17px;
+            }
+
+            .nav-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 12px;
+                font-size: 16px;
+            }
+
+            .nav-text h3 {
+                font-size: 12px;
+            }
+
+            .nav-text p {
+                font-size: 9px;
+            }
+
+            .nav-arrow {
+                font-size: 13px;
+            }
+
+            .welcome-message {
+                margin-top: 0;
+                min-height: 48px;
+            }
+
+            .minion-trio {
+                height: 145px;
+                gap: 3px;
+            }
+
+            .minion-character {
+                width: 82px;
+                height: 125px;
+            }
+
+            .minion-character:nth-child(2) {
+                height: 135px;
+            }
+        }
+
+        @media(max-width:360px) {
+            .gift-stage {
+                transform: scale(.78);
+                margin-top: -22px;
+                margin-bottom: -35px;
+            }
+
+            .nav-card {
+                gap: 7px;
+                padding: 11px 8px;
+            }
+
+            .minion-character {
+                width: 72px;
+                height: 115px;
+            }
+
+            .minion-character:nth-child(2) {
+                height: 125px;
+            }
+        }
+    </style>
+</head>
+
+<body data-bgm-track="normal">
+
+<header class="global-header">
+    <a href="password.html" class="glass-button" data-navigate="password.html">
+        <span>←</span>
+        <span>重新开始</span>
+    </a>
+
+    <button class="glass-button" id="musicToggle">
+        <span>♫</span>
+        <span>开启音乐</span>
+    </button>
+</header>
+
+<audio id="backgroundMusic" loop>
+    <source src="assets/music/birthday.mp3" type="audio/mpeg">
+</audio>
+
+<main class="home-page page-enter">
+
+    <div class="ribbon-decoration left"></div>
+    <div class="ribbon-decoration right"></div>
+
+    <!-- 标题 -->
+    <section class="home-heading">
+        <p class="eyebrow">A LITTLE WORLD FOR YOU</p>
+
+        <h1>一份藏在礼盒里的生日惊喜</h1>
+
+        <p>今天，所有温柔都为你而来</p>
+    </section>
+
+    <!-- 礼盒 -->
+    <div class="gift-stage"
+         id="giftStage"
+         role="button"
+         tabindex="0"
+         aria-label="点击打开生日礼盒">
+
+        <div class="gift-shadow"></div>
+
+        <div class="gift-box">
+
+            <!-- 礼盒主体 -->
+            <div class="gift-body">
+                <div class="gift-number">11.25</div>
+            </div>
+
+            <!-- 盒盖 -->
+            <div class="gift-lid">
+                <div class="gift-bow">
+                    <div class="bow-loop left"></div>
+                    <div class="bow-loop right"></div>
+                    <div class="bow-center"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="giftParticles"></div>
+
+    </div>
+
+    <p class="gift-tip" id="giftTip">
+        点击礼盒 · 开启专属于你的惊喜
+    </p>
+
+    <!-- 欢迎文案 -->
+    <div class="welcome-message" id="welcomeMessage">
+        <span id="typingText"></span>
+        <span class="typing-cursor" id="typingCursor"></span>
+    </div>
+
+    <!-- 小牛贴纸彩蛋 -->
+    <button class="cow-sticker"
+            id="cowSticker"
+            aria-label="小牛隐藏彩蛋">
+
+        <svg viewBox="0 0 100 100"
+             xmlns="http://www.w3.org/2000/svg">
+
+            <ellipse cx="50" cy="56" rx="32" ry="29"
+                     fill="#fff2e8"/>
+
+            <ellipse cx="21" cy="47" rx="13" ry="8"
+                     fill="#eac7c3" transform="rotate(-25 21 47)"/>
+
+            <ellipse cx="79" cy="47" rx="13" ry="8"
+                     fill="#eac7c3" transform="rotate(25 79 47)"/>
+
+            <path d="M35 30 Q27 11 43 20 L46 32"
+                  fill="#e8d0b8"/>
+
+            <path d="M55 32 Q60 11 73 22 L64 35"
+                  fill="#e8d0b8"/>
+
+            <ellipse cx="50" cy="54" rx="26" ry="23"
+                     fill="#fff8ef"/>
+
+            <circle cx="41" cy="52" r="3" fill="#795e60"/>
+            <circle cx="59" cy="52" r="3" fill="#795e60"/>
+
+            <ellipse cx="50" cy="64" rx="12" ry="8"
+                     fill="#efc2bd"/>
+
+            <circle cx="46" cy="63" r="1.5" fill="#bb8d8c"/>
+            <circle cx="54" cy="63" r="1.5" fill="#bb8d8c"/>
+
+            <path d="M44 69 Q50 74 56 69"
+                  fill="none" stroke="#a77e7c"
+                  stroke-width="1.5"/>
+
+            <path d="M38 32 L50 7 L62 32 Z"
+                  fill="#e9bdcc"/>
+
+            <circle cx="50" cy="8" r="4" fill="#e8c8a8"/>
+
+        </svg>
+    </button>
+
+    <!-- 四个导航入口 -->
+    <section class="navigation-section" id="navigationSection">
+
+        <div class="navigation-grid">
+
+            <a href="memory.html" class="nav-card">
+                <div class="nav-icon">✧</div>
+                <div class="nav-text">
+                    <h3>回忆照片墙</h3>
+                    <p>那些值得珍藏的时光</p>
+                </div>
+                <span class="nav-arrow">›</span>
+            </a>
+
+            <a href="minion-game.html" class="nav-card">
+                <div class="nav-icon">B</div>
+                <div class="nav-text">
+                    <h3>小黄人香蕉挑战</h3>
+                    <p>收集香蕉，解锁祝福</p>
+                </div>
+                <span class="nav-arrow">›</span>
+            </a>
+
+            <a href="ox-bless.html" class="nav-card">
+                <div class="nav-icon">♡</div>
+                <div class="nav-text">
+                    <h3>属牛的专属信</h3>
+                    <p>写给特别的你</p>
+                </div>
+                <span class="nav-arrow">›</span>
+            </a>
+
+            <a href="final.html" class="nav-card">
+                <div class="nav-icon">✧</div>
+                <div class="nav-text">
+                    <h3>许愿终点</h3>
+                    <p>把愿望交给星光</p>
+                </div>
+                <span class="nav-arrow">›</span>
+            </a>
+
+        </div>
+
+    </section>
+
+    <footer class="home-footer">
+        To 我最温柔的属牛女孩
+        <span> · 11.25</span>
+    </footer>
+
+</main>
+
+<!-- 小黄人彩蛋弹窗 -->
+<div class="easter-overlay" id="easterOverlay">
+
+    <div class="easter-card">
+
+        <div class="eyebrow">A SECRET BLESSING</div>
+
+        <!-- 电影原版小黄人 -->
+        <div class="minion-trio">
+
+            <img
+                class="minion-character"
+                src="assets/images/minions/kevin.png"
+                alt="Kevin"
+            >
+
+            <img
+                class="minion-character"
+                src="assets/images/minions/bob.png"
+                alt="Bob"
+            >
+
+            <img
+                class="minion-character"
+                src="assets/images/minions/stuart.png"
+                alt="Stuart"
+            >
+
+        </div>
+
+        <h2>Bee-do！惊喜被发现啦！</h2>
+
+        <p>
+            Bob、Kevin 和 Stuart<br>
+            一起祝姐姐生日快乐！<br>
+            愿你每天都有香蕉一样甜甜的好心情。
+        </p>
+
+        <button class="primary-button easter-close"
+                id="closeEaster">
+            收下这份祝福
+        </button>
+
+    </div>
+
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/home.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,953 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>写给属牛的姐姐 · 11.25</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 70px;
+    }
+
+    .letter-page {
+      width: min(920px, 90%);
+      margin: 0 auto;
+      padding: 32px 0 50px;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color .3s;
+    }
+
+    .back-link:hover {
+      color: var(--gold-dark);
+    }
+
+    /* 标题 */
+    .letter-header {
+      text-align: center;
+      margin: 38px 0 28px;
+    }
+
+    .letter-tag {
+      display: inline-block;
+      padding: 7px 18px;
+      border-radius: 30px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(255,255,255,.8);
+      color: var(--gold-dark);
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .letter-title {
+      color: var(--text);
+      font-size: clamp(27px, 5vw, 40px);
+      letter-spacing: 4px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .letter-subtitle {
+      color: var(--text-light);
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    /* 信封 */
+    .envelope-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 330px;
+      perspective: 1000px;
+      margin: 15px auto 30px;
+    }
+
+    .envelope {
+      width: min(390px, 90vw);
+      height: 245px;
+      position: relative;
+      cursor: pointer;
+      filter: drop-shadow(0 15px 22px rgba(150,105,120,.15));
+      transition: transform .4s;
+    }
+
+    .envelope:hover {
+      transform: translateY(-5px);
+    }
+
+    .envelope-back {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, #f4d7df, #edc3cf);
+      border-radius: 12px;
+    }
+
+    .envelope-paper {
+      position: absolute;
+      width: 88%;
+      height: 85%;
+      left: 6%;
+      bottom: 5%;
+      background: #fffaf8;
+      border-radius: 8px;
+      text-align: center;
+      padding: 30px 15px;
+      transition: transform .8s cubic-bezier(.2,1,.3,1);
+      z-index: 1;
+    }
+
+    .envelope-paper span {
+      display: block;
+      color: var(--gold-dark);
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .envelope-paper strong {
+      color: var(--text);
+      font-size: 20px;
+      letter-spacing: 3px;
+      font-weight: 500;
+    }
+
+    .envelope-front {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: linear-gradient(145deg, #f8dce4, #edc1cf);
+      clip-path: polygon(0 0, 50% 58%, 100% 0, 100% 100%, 0 100%);
+      border-radius: 12px;
+    }
+
+    .envelope-flap {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      background: linear-gradient(145deg, #fbe7ec, #edc3cf);
+      clip-path: polygon(0 0, 100% 0, 50% 62%);
+      transform-origin: top center;
+      transition: transform .7s ease, z-index .1s .35s;
+      border-radius: 10px;
+    }
+
+    .envelope-seal {
+      position: absolute;
+      z-index: 5;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      width: 43px;
+      height: 43px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 20px;
+      background: linear-gradient(145deg, #d9ad82, #c69a70);
+      box-shadow: 0 4px 10px rgba(150,105,70,.2);
+      transition: opacity .3s;
+    }
+
+    .envelope.open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 0;
+    }
+
+    .envelope.open .envelope-paper {
+      transform: translateY(-105px);
+    }
+
+    .envelope.open .envelope-seal {
+      opacity: 0;
+    }
+
+    .envelope-hint {
+      position: absolute;
+      left: 50%;
+      bottom: -38px;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      color: var(--text-light);
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* 正式信件 */
+    .letter-content {
+      display: none;
+      width: min(720px, 100%);
+      margin: 0 auto;
+      animation: letterAppear .8s ease both;
+    }
+
+    .letter-content.show {
+      display: block;
+    }
+
+    @keyframes letterAppear {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .letter-paper {
+      position: relative;
+      padding: clamp(25px, 6vw, 55px);
+      border-radius: 8px;
+      background:
+        linear-gradient(rgba(255,255,255,.94), rgba(255,250,248,.96)),
+        #fffaf8;
+      border: 1px solid rgba(232,200,168,.45);
+      box-shadow: 0 15px 45px rgba(150,105,120,.12);
+      overflow: hidden;
+    }
+
+    .letter-paper::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(232,200,168,.35);
+    }
+
+    .paper-decoration {
+      position: absolute;
+      right: 25px;
+      top: 20px;
+      color: rgba(232,200,168,.5);
+      font-size: 26px;
+    }
+
+    .letter-date {
+      text-align: right;
+      color: var(--gold-dark);
+      font-size: 12px;
+      letter-spacing: 1px;
+      margin-bottom: 35px;
+    }
+
+    .letter-greeting {
+      color: var(--text);
+      font-size: 19px;
+      font-weight: 500;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    .letter-body {
+      color: #806b73;
+      font-size: 14px;
+      line-height: 2.35;
+      letter-spacing: .4px;
+    }
+
+    .letter-body p {
+      margin-bottom: 17px;
+      text-indent: 2em;
+    }
+
+    .letter-body .highlight {
+      color: #c58f9f;
+      font-weight: 500;
+    }
+
+    .letter-signature {
+      text-align: right;
+      margin-top: 38px;
+      color: var(--text);
+      line-height: 2;
+      font-size: 14px;
+    }
+
+    .letter-signature strong {
+      display: block;
+      color: var(--gold-dark);
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: 2px;
+    }
+
+    .letter-bottom-mark {
+      text-align: center;
+      color: #d7b59c;
+      margin-top: 35px;
+      font-size: 13px;
+      letter-spacing: 4px;
+    }
+
+    /* 小牛和 Bob */
+    .character-area {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 30px;
+      margin: 35px auto 10px;
+      min-height: 180px;
+    }
+
+    .cow-button {
+      width: 120px;
+      height: 150px;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      position: relative;
+      transition: transform .3s;
+    }
+
+    .cow-button:hover {
+      transform: translateY(-7px) rotate(-4deg);
+    }
+
+    .cow-button svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 7px 9px rgba(120,90,100,.1));
+    }
+
+    .bob-character {
+      width: 120px;
+      height: 165px;
+      object-fit: contain;
+      filter: drop-shadow(0 7px 10px rgba(120,90,100,.13));
+      animation: bobFloat 3.5s ease-in-out infinite;
+    }
+
+    @keyframes bobFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .cow-hint {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    /* 心愿区域 */
+    .wish-section {
+      width: min(600px, 100%);
+      margin: 45px auto 0;
+      padding: 28px;
+      border-radius: 23px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.85);
+      box-shadow: 0 9px 28px rgba(150,105,120,.07);
+      text-align: center;
+    }
+
+    .wish-title {
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .wish-desc {
+      color: var(--text-light);
+      font-size: 12px;
+      line-height: 1.8;
+      margin-bottom: 18px;
+    }
+
+    .wish-input {
+      display: block;
+      width: 100%;
+      min-height: 95px;
+      resize: vertical;
+      border: 1px solid rgba(232,200,168,.5);
+      border-radius: 14px;
+      outline: none;
+      background: rgba(255,255,255,.7);
+      padding: 14px;
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.8;
+      transition: border-color .3s, box-shadow .3s;
+    }
+
+    .wish-input:focus {
+      border-color: #e3b7c4;
+      box-shadow: 0 0 0 3px rgba(234,185,200,.13);
+    }
+
+    .wish-input::placeholder {
+      color: #c3adb5;
+    }
+
+    .wish-save {
+      margin-top: 15px;
+      border: none;
+      border-radius: 30px;
+      padding: 11px 28px;
+      color: white;
+      background: linear-gradient(135deg, #e9bdca, #dca6b7);
+      font-size: 12px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: transform .3s, box-shadow .3s;
+    }
+
+    .wish-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 18px rgba(210,150,170,.25);
+    }
+
+    .wish-status {
+      min-height: 20px;
+      margin-top: 12px;
+      color: var(--gold-dark);
+      font-size: 11px;
+    }
+
+    /* 星星粒子 */
+    .gold-star {
+      position: fixed;
+      z-index: 99999;
+      pointer-events: none;
+      color: #d9b47f;
+      text-shadow: 0 3px 12px rgba(217, 180, 127, .6);
+      animation: starFallScreen ease-out forwards;
+    }
+
+    @keyframes starFallScreen {
+      0% {
+        opacity: 0;
+        transform: translateY(0) rotate(0deg) scale(.5);
+      }
+      15% {
+        opacity: 1;
+        transform: translateY(150px) rotate(60deg) scale(1);
+      }
+      85% {
+        opacity: 1;
+        transform: translateY(calc(100vh + 100px)) rotate(300deg) scale(1.1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(calc(100vh + 200px)) rotate(360deg) scale(.3);
+      }
+    }
+
+    /* Bob 小黄人样式增强 */
+    .bob-character {
+      width: 120px;
+      height: 165px;
+      object-fit: contain;
+      filter: drop-shadow(0 7px 10px rgba(120,90,100,.13));
+      animation: bobFloat 3.5s ease-in-out infinite;
+      cursor: pointer;
+      transition: transform .3s, filter .3s;
+      position: relative;
+    }
+
+    .bob-character:hover {
+      transform: translateY(-10px) scale(1.05);
+      filter: drop-shadow(0 10px 15px rgba(120,90,100,.2));
+    }
+
+    /* Bob 祝福气泡 */
+    .bob-blessing {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      z-index: 10000;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 20px;
+      padding: 35px 30px;
+      max-width: 90vw;
+      width: 420px;
+      box-shadow: 0 20px 60px rgba(120, 90, 100, .25);
+      border: 2px solid rgba(232, 200, 168, .5);
+      opacity: 0;
+      pointer-events: none;
+      transition: all .4s cubic-bezier(0.2, 1, 0.3, 1);
+    }
+
+    .bob-blessing.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .bob-blessing-header {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .bob-blessing-title {
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin: 10px 0;
+    }
+
+    .bob-blessing-text {
+      color: #806b73;
+      font-size: 15px;
+      line-height: 2;
+      letter-spacing: .5px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .bob-blessing-close {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #e9bdca, #dca6b7);
+      color: white;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform .3s;
+    }
+
+    .bob-blessing-close:hover {
+      transform: translateY(-2px);
+    }
+
+    .bob-blessing-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .3);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+
+    .bob-blessing-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+
+    /* 下一页 */
+    .next-area {
+      text-align: center;
+      margin-top: 45px;
+    }
+
+    .next-link {
+      display: inline-block;
+      padding: 13px 30px;
+      border-radius: 30px;
+      color: white;
+      text-decoration: none;
+      background: linear-gradient(135deg, #e9bdca, #dca6b7);
+      font-size: 13px;
+      letter-spacing: 1px;
+      box-shadow: 0 7px 18px rgba(210,150,170,.2);
+      transition: .3s;
+    }
+
+    .next-link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 22px rgba(210,150,170,.3);
+    }
+
+    .page-footer {
+      text-align: center;
+      margin-top: 35px;
+      color: var(--text-light);
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    @media(max-width: 600px) {
+      .letter-page {
+        padding-top: 25px;
+      }
+
+      .letter-header {
+        margin-top: 30px;
+      }
+
+      .envelope-area {
+        min-height: 290px;
+      }
+
+      .envelope {
+        height: 210px;
+      }
+
+      .envelope.open .envelope-paper {
+        transform: translateY(-80px);
+      }
+
+      .letter-paper {
+        padding: 28px 25px 30px 32px;
+      }
+
+      .letter-body {
+        font-size: 13px;
+      }
+
+      .character-area {
+        gap: 18px;
+      }
+
+      .cow-button {
+        width: 95px;
+        height: 125px;
+      }
+
+      .bob-character {
+        width: 100px;
+        height: 140px;
+      }
+
+      .wish-section {
+        padding: 23px 17px;
+      }
+    }
+  </style>
+</head>
+
+<body data-bgm-track="normal">
+  <main class="letter-page">
+
+    <a href="minion-game.html" class="back-link">← 返回香蕉小游戏</a>
+
+    <audio id="backgroundMusic" loop>
+        <source src="assets/music/birthday.mp3" type="audio/mpeg">
+    </audio>
+
+    <header class="letter-header">
+      <div class="letter-tag">A LETTER FOR YOU</div>
+      <h1 class="letter-title">写给属牛的姐姐</h1>
+      <p class="letter-subtitle">
+        愿你像一束温柔的光，<br>
+        在自己的世界里闪闪发亮。
+      </p>
+    </header>
+
+    <!-- 信封 -->
+    <section class="envelope-area" id="envelopeArea">
+      <div class="envelope" id="envelope">
+        <div class="envelope-back"></div>
+
+        <div class="envelope-paper">
+          <span>TO MY DEAREST SISTER</span>
+          <strong>生日快乐 ♡</strong>
+        </div>
+
+        <div class="envelope-front"></div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-seal">♡</div>
+
+        <div class="envelope-hint">点击信封，拆开这份专属祝福</div>
+      </div>
+    </section>
+
+    <!-- 信件正文 -->
+    <section class="letter-content" id="letterContent">
+      <article class="letter-paper">
+        <div class="paper-decoration">✦</div>
+
+        <div class="letter-date">2026.11.25 · 一个特别的日子</div>
+
+        <h2 class="letter-greeting">亲爱的姐姐：</h2>
+
+        <div class="letter-body">
+          <p>
+            生日快乐！又到了属于你的特别日子。
+            想借着这个小小的生日网页，认真地送上一份祝福。
+          </p>
+
+          <p>
+            听说属牛的人，总带着一种踏实又温柔的力量。
+            不急不躁，认真生活，一步一步走向自己想去的地方。
+            希望你也一直保留这份可爱的坚持，
+            不管遇到什么，都能从容地面对。
+          </p>
+
+          <p>
+            新的一岁，希望你有
+            <span class="highlight">吃不完的美食、看不完的风景</span>，
+            有说走就走的勇气，也有随时停下来休息的自由。
+          </p>
+
+          <p>
+            希望生活里的小烦恼都能悄悄溜走，
+            好运和快乐像小黄人手里的香蕉一样，
+            一个接着一个，源源不断地来到你身边。
+          </p>
+
+          <p>
+            最重要的是，不要总是忘记照顾自己。
+            累了就休息，开心就大声笑，
+            永远做那个自在、快乐、被爱包围的自己。
+          </p>
+
+          <p>
+            愿你往后的每一天，都有温柔相伴，
+            有惊喜发生，有期待可盼。
+            <span class="highlight">平安喜乐，万事顺意。</span>
+          </p>
+        </div>
+
+        <div class="letter-signature">
+          永远爱你的
+          <strong>家人 ♡</strong>
+        </div>
+
+        <div class="letter-bottom-mark">✦ 11 · 25 ✦</div>
+      </article>
+
+      <!-- 小牛和 Bob -->
+      <div class="character-area">
+
+        <button class="cow-button" id="cowButton" aria-label="点击小牛">
+          <svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+            <!-- 耳朵 -->
+            <ellipse cx="20" cy="47" rx="17" ry="10" fill="#fff"/>
+            <ellipse cx="100" cy="47" rx="17" ry="10" fill="#fff"/>
+            <ellipse cx="20" cy="47" rx="9" ry="5" fill="#eeb6c6"/>
+            <ellipse cx="100" cy="47" rx="9" ry="5" fill="#eeb6c6"/>
+
+            <!-- 身体 -->
+            <ellipse cx="60" cy="87" rx="43" ry="48" fill="#fffaf6" stroke="#e9d6cc" stroke-width="2"/>
+
+            <!-- 牛角 -->
+            <path d="M35 43 Q24 21 38 25 Q45 29 43 42" fill="#d8b58e" stroke="#c69b75" stroke-width="1"/>
+            <path d="M77 42 Q75 29 83 25 Q96 21 85 43" fill="#d8b58e" stroke="#c69b75" stroke-width="1"/>
+
+            <!-- 头顶斑点 -->
+            <path d="M43 45 Q48 32 59 39 Q68 31 77 44 Q69 54 57 51 Q49 55 43 45" fill="#806c69"/>
+
+            <!-- 眼睛 -->
+            <ellipse cx="46" cy="73" rx="5" ry="7" fill="#594b49"/>
+            <ellipse cx="74" cy="73" rx="5" ry="7" fill="#594b49"/>
+            <circle cx="48" cy="70" r="2" fill="white"/>
+            <circle cx="76" cy="70" r="2" fill="white"/>
+
+            <!-- 鼻子 -->
+            <ellipse cx="60" cy="91" rx="21" ry="15" fill="#f2b9c6"/>
+            <ellipse cx="52" cy="90" rx="3" ry="4" fill="#b9828e"/>
+            <ellipse cx="68" cy="90" rx="3" ry="4" fill="#b9828e"/>
+
+            <!-- 嘴巴 -->
+            <path d="M53 103 Q60 110 67 103" fill="none" stroke="#9c7077" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- 腮红 -->
+            <ellipse cx="32" cy="89" rx="8" ry="4" fill="#f5c9d2" opacity=".8"/>
+            <ellipse cx="88" cy="89" rx="8" ry="4" fill="#f5c9d2" opacity=".8"/>
+
+            <!-- 脚 -->
+            <ellipse cx="43" cy="131" rx="14" ry="7" fill="#e9d6cc"/>
+            <ellipse cx="77" cy="131" rx="14" ry="7" fill="#e9d6cc"/>
+          </svg>
+        </button>
+
+        <img
+          class="bob-character"
+          src="assets/images/minions/bob.png"
+          alt="Bob"
+          id="bobCharacter"
+        >
+
+      </div>
+
+      <p class="cow-hint">点击小牛收获星星雨 ✨ · 点击小黄人看专属祝福 🎈</p>
+
+      <!-- 心愿 -->
+      <section class="wish-section">
+        <h2 class="wish-title">许下新一岁的心愿 ♡</h2>
+        <p class="wish-desc">
+          把心里最想实现的愿望写下来吧，<br>
+          让这份小小的期待，陪你走向新的一岁。
+        </p>
+
+        <textarea
+          class="wish-input"
+          id="wishInput"
+          placeholder="在这里写下你的生日心愿……"
+          maxlength="300"
+        ></textarea>
+
+        <button class="wish-save" id="wishSave">保存我的心愿</button>
+        <p class="wish-status" id="wishStatus"></p>
+      </section>
+
+      <div class="next-area">
+        <a href="final.html" class="next-link">前往最后的生日惊喜 →</a>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      MADE WITH LOVE · 11.25
+    </footer>
+
+  </main>
+
+  <!-- Bob 祝福弹窗 -->
+  <div class="bob-blessing-overlay" id="bobBlessingOverlay"></div>
+  <div class="bob-blessing" id="bobBlessing">
+    <div class="bob-blessing-header">🍌</div>
+    <h3 class="bob-blessing-title">Bob 的专属祝福</h3>
+    <div class="bob-blessing-text">
+      "Bananaaaa！姐姐！🎈<br><br>
+      Bob 祝你每天都像吃到香蕉一样开心！<br>
+      希望你永远快乐，永远被爱包围！<br><br>
+      抱抱！生日快乐！♡"
+    </div>
+    <button class="bob-blessing-close" id="bobBlessingClose">收下祝福 ♡</button>
+  </div>
+
+  <script src="js/common.js"></script>
+
+  <script>
+    const envelope = document.getElementById("envelope");
+    const letterContent = document.getElementById("letterContent");
+    const envelopeArea = document.getElementById("envelopeArea");
+
+    let isOpened = false;
+
+    // 点击信封，打开信件
+    envelope.addEventListener("click", () => {
+      if (isOpened) return;
+
+      isOpened = true;
+      envelope.classList.add("open");
+
+      setTimeout(() => {
+        envelopeArea.style.display = "none";
+        letterContent.classList.add("show");
+      }, 850);
+    });
+
+    // 点击小牛，全屏星星雨
+    const cowButton = document.getElementById("cowButton");
+
+    cowButton.addEventListener("click", function (e) {
+      e.stopPropagation();
+      
+      // 生成超多星星，覆盖整个屏幕
+      const starCount = 80; // 星星数量
+      const symbols = ["✦", "✧", "⭐", "✨", "🌟"];
+
+      for (let i = 0; i < starCount; i++) {
+        setTimeout(() => {
+          const star = document.createElement("span");
+          star.className = "gold-star";
+          
+          // 随机选择星星样式
+          star.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+          // 随机大小
+          const size = 16 + Math.random() * 18;
+          star.style.fontSize = size + "px";
+
+          // 随机横向位置（整个视口宽度）
+          const leftPosition = Math.random() * window.innerWidth;
+          star.style.left = leftPosition + "px";
+          
+          // 从视口顶部开始（使用 fixed 定位，相对于视口）
+          star.style.top = "-50px";
+
+          // 随机动画时长
+          const duration = 1.2 + Math.random() * 1;
+          star.style.animationDuration = duration + "s";
+
+          // 随机延迟
+          star.style.animationDelay = (Math.random() * 0.3) + "s";
+
+          document.body.appendChild(star);
+
+          setTimeout(() => {
+            star.remove();
+          }, (duration + 0.3) * 1000);
+        }, i * 25); // 快速连续生成
+      }
+
+      // 小牛抖动效果
+      this.style.animation = "none";
+      setTimeout(() => {
+        this.style.animation = "";
+      }, 10);
+    });
+
+    // 点击 Bob 显示祝福
+    const bobCharacter = document.getElementById("bobCharacter");
+    const bobBlessing = document.getElementById("bobBlessing");
+    const bobBlessingOverlay = document.getElementById("bobBlessingOverlay");
+    const bobBlessingClose = document.getElementById("bobBlessingClose");
+
+    bobCharacter.addEventListener("click", function (e) {
+      e.stopPropagation();
+      bobBlessing.classList.add("show");
+      bobBlessingOverlay.classList.add("show");
+    });
+
+    bobBlessingClose.addEventListener("click", function () {
+      bobBlessing.classList.remove("show");
+      bobBlessingOverlay.classList.remove("show");
+    });
+
+    bobBlessingOverlay.addEventListener("click", function () {
+      bobBlessing.classList.remove("show");
+      bobBlessingOverlay.classList.remove("show");
+    });
+
+
+    // 心愿保存
+    const wishInput = document.getElementById("wishInput");
+    const wishStatus = document.getElementById("wishStatus");
+    const wishSave = document.getElementById("wishSave");
+
+    const savedWish = localStorage.getItem("birthdaySisterWish");
+
+    if (savedWish) {
+      wishInput.value = savedWish;
+      wishStatus.textContent = "已经保存过你的心愿啦 ♡";
+    }
+
+    wishSave.addEventListener("click", () => {
+      const wish = wishInput.value.trim();
+
+      if (!wish) {
+        wishStatus.textContent = "先写下一点心愿，再保存吧 ♡";
+        return;
+      }
+
+      localStorage.setItem("birthdaySisterWish", wish);
+      wishStatus.textContent = "心愿已经好好收藏起来啦 ✨";
+    });
+  </script>
+</body>
+</html>

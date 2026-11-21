@@ -1,0 +1,1466 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生日快乐 · 最后的惊喜</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .final-page {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 55px 20px 45px;
+      overflow: hidden;
+    }
+
+    /* 背景装饰 */
+    .background-glow {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: .35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-one {
+      background: #f7cbd8;
+      top: -180px;
+      left: -180px;
+    }
+
+    .glow-two {
+      background: #f5dfc3;
+      right: -180px;
+      bottom: -180px;
+    }
+
+    .final-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 850px;
+      text-align: center;
+    }
+
+    .top-label {
+      display: inline-block;
+      padding: 9px 20px;
+      border-radius: 30px;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.8);
+      color: #b18c99;
+      font-size: 12px;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+
+    .main-title {
+      font-size: clamp(30px, 6vw, 48px);
+      font-weight: 700;
+      color: #8b6875;
+      letter-spacing: 3px;
+      margin: 0 0 12px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #ad929c;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+    }
+
+    /* =========================
+       蛋糕区域
+    ========================= */
+
+    .cake-scene {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      height: 370px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .cake {
+      position: relative;
+      width: 300px;
+      height: 210px;
+      margin-bottom: 30px;
+      animation: cakeAppear 1.2s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes cakeAppear {
+      from {
+        opacity: 0;
+        transform: translateY(35px) scale(.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* 蜡烛 */
+    .candles {
+      position: absolute;
+      z-index: 5;
+      left: 50%;
+      top: -105px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: flex-end;
+      gap: 15px;
+    }
+
+    .candle {
+      position: relative;
+      width: 30px;
+      height: 90px;
+      border-radius: 7px 7px 4px 4px;
+      background: repeating-linear-gradient(
+        135deg,
+        #fff8e9 0px,
+        #fff8e9 9px,
+        #f2b9ca 9px,
+        #f2b9ca 18px
+      );
+      box-shadow: 0 4px 9px rgba(160,110,125,.12);
+      cursor: pointer;
+      transition: opacity .3s, transform .3s;
+    }
+
+    .candle:nth-child(2),
+    .candle:nth-child(3) {
+      height: 105px;
+    }
+
+    .candle:hover:not(.extinguished) {
+      transform: translateY(-5px);
+    }
+
+    .candle.extinguished {
+      opacity: .48;
+      cursor: default;
+      transform: translateY(4px);
+    }
+
+    .wick {
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 11px;
+      background: #826b63;
+      border-radius: 3px;
+    }
+
+    .flame {
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      width: 19px;
+      height: 29px;
+      transform: translateX(-50%);
+      border-radius: 50% 50% 45% 45%;
+      background: linear-gradient(
+        to top,
+        #ffb84e,
+        #ffe18b,
+        #fff5ce
+      );
+      box-shadow:
+        0 0 12px rgba(255,190,90,.8),
+        0 0 25px rgba(255,200,120,.4);
+      animation: flameDance .8s ease-in-out infinite alternate;
+      transform-origin: center bottom;
+      pointer-events: none;
+    }
+
+    @keyframes flameDance {
+      from {
+        transform: translateX(-50%) rotate(-5deg) scale(.95);
+      }
+      to {
+        transform: translateX(-50%) rotate(5deg) scale(1.08);
+      }
+    }
+
+    .candle.extinguished .flame {
+      display: none;
+    }
+
+    .candle-number {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: #bd8495;
+      font-size: 14px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    /* 蛋糕主体 */
+    .cake-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 65px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #fff4f2, #f9d9df);
+      border: 4px solid #fff8f4;
+      box-shadow: 0 5px 12px rgba(177,120,139,.12);
+      z-index: 3;
+    }
+
+    .cake-middle {
+      position: absolute;
+      top: 27px;
+      left: 7px;
+      width: 286px;
+      height: 105px;
+      background: linear-gradient(
+        110deg,
+        #f7cbd6,
+        #ffe7e8 50%,
+        #f2c0cf
+      );
+      border-radius: 0 0 18px 18px;
+      z-index: 2;
+    }
+
+    .cream-drip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 28px;
+      z-index: 4;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .cream-drip span {
+      display: block;
+      width: 22px;
+      height: 32px;
+      border-radius: 0 0 14px 14px;
+      background: #fff8f2;
+    }
+
+    .cream-drip span:nth-child(2n) {
+      height: 22px;
+    }
+
+    .cake-bottom {
+      position: absolute;
+      top: 122px;
+      left: -13px;
+      width: 326px;
+      height: 75px;
+      border-radius: 0 0 22px 22px;
+      background: linear-gradient(
+        110deg,
+        #eeb6c7,
+        #f9d9df 50%,
+        #eab0c2
+      );
+      z-index: 1;
+      box-shadow: 0 12px 20px rgba(176,119,139,.16);
+    }
+
+    .cake-bottom::before {
+      content: "";
+      position: absolute;
+      top: -13px;
+      left: 0;
+      width: 326px;
+      height: 30px;
+      border-radius: 50%;
+      background: #fff0ed;
+    }
+
+    .cake-decoration {
+      position: absolute;
+      top: 54px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      font-size: 24px;
+      color: #d6aa79;
+      letter-spacing: 8px;
+      white-space: nowrap;
+    }
+
+    .cake-plate {
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 370px;
+      height: 24px;
+      background: linear-gradient(to bottom, #fffdfb, #ecd9d3);
+      border-radius: 50%;
+      box-shadow: 0 8px 18px rgba(160,115,125,.14);
+      z-index: 0;
+    }
+
+    /* 点击提示 */
+    .click-hint {
+      color: #b3959e;
+      font-size: 13px;
+      letter-spacing: 1px;
+      margin-top: 5px;
+      animation: hintFloat 2.5s ease-in-out infinite;
+    }
+
+    @keyframes hintFloat {
+      0%,100% {
+        opacity: .65;
+        transform: translateY(0);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(-4px);
+      }
+    }
+
+    .progress-text {
+      color: #c19da8;
+      font-size: 12px;
+      margin-top: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* =========================
+       29岁生日惊喜弹窗 - 精美版
+    ========================= */
+
+    .birthday-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(232, 181, 197, .25), rgba(0, 0, 0, .5));
+      backdrop-filter: blur(12px);
+      z-index: 9998;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .birthday-popup-overlay.show {
+      display: flex;
+      animation: overlayFadeIn .5s ease;
+    }
+
+    @keyframes overlayFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .birthday-popup {
+      position: relative;
+      background: 
+        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .95), transparent 60%),
+        radial-gradient(circle at 70% 80%, rgba(255, 240, 245, .9), transparent 60%),
+        linear-gradient(145deg, #fffbfc, #fff8fa);
+      border-radius: 40px;
+      padding: 70px 60px 60px;
+      box-shadow: 
+        0 30px 90px rgba(200, 140, 160, .4),
+        0 0 50px rgba(255, 220, 230, .3);
+      text-align: center;
+      max-width: 90vw;
+      transform: scale(.3);
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    /* 背景装饰光晕 */
+    .birthday-popup::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(249, 220, 230, .4) 0%, transparent 60%);
+      animation: rotateGlow 8s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotateGlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .birthday-popup-overlay.show .birthday-popup {
+      animation: popupBounceIn .9s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    }
+
+    @keyframes popupBounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(.2) translateY(50px);
+      }
+      50% {
+        transform: scale(1.08) translateY(-10px);
+      }
+      75% {
+        transform: scale(.96) translateY(5px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .birthday-popup-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .birthday-popup-icon {
+      font-size: clamp(45px, 10vw, 65px);
+      margin-bottom: 15px;
+      display: inline-block;
+      animation: iconBounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes iconBounce {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      25% {
+        transform: translateY(-12px) rotate(-8deg);
+      }
+      75% {
+        transform: translateY(-5px) rotate(5deg);
+      }
+    }
+
+    .birthday-popup-number {
+      font-family: "Georgia", "Times New Roman", serif;
+      font-size: clamp(130px, 32vw, 240px);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -8px;
+      background: linear-gradient(
+        145deg,
+        #f2a7c0 0%,
+        #d89bb0 25%,
+        #e8c8a5 50%,
+        #d5a47d 75%,
+        #f2b5c8 100%
+      );
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 8px 20px rgba(230, 160, 180, .35));
+      margin: 0;
+      animation: numberGradientShift 3s ease-in-out infinite;
+      position: relative;
+    }
+
+    @keyframes numberGradientShift {
+      0%, 100% {
+        background-position: 0% 50%;
+        transform: scale(1);
+      }
+      50% {
+        background-position: 100% 50%;
+        transform: scale(1.03);
+      }
+    }
+
+    .birthday-popup-text {
+      color: #c89aaa;
+      font-size: clamp(32px, 7vw, 50px);
+      font-weight: 600;
+      letter-spacing: 8px;
+      margin: 25px 0 15px;
+      text-shadow: 0 3px 15px rgba(200, 154, 170, .2);
+      animation: textGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes textGlow {
+      0%, 100% {
+        opacity: .9;
+        transform: translateY(0);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(-5px);
+        text-shadow: 0 3px 20px rgba(200, 154, 170, .4);
+      }
+    }
+
+    .birthday-popup-subtitle {
+      color: #d4b5c0;
+      font-size: clamp(13px, 3vw, 16px);
+      letter-spacing: 4px;
+      margin: 0;
+      opacity: .85;
+    }
+
+    /* 漂浮的装饰元素 */
+    .birthday-popup-sparkles {
+      position: absolute;
+      font-size: 28px;
+      filter: drop-shadow(0 2px 8px rgba(255, 200, 220, .5));
+      animation: sparkleFloat 3s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .sparkle-1 {
+      top: 8%;
+      left: 8%;
+      color: #f5d0a8;
+      font-size: 35px;
+      animation-delay: 0s;
+    }
+
+    .sparkle-2 {
+      top: 12%;
+      right: 10%;
+      color: #f2c2d5;
+      font-size: 32px;
+      animation-delay: .7s;
+    }
+
+    .sparkle-3 {
+      bottom: 15%;
+      left: 12%;
+      color: #e8c8b5;
+      font-size: 30px;
+      animation-delay: 1.4s;
+    }
+
+    .sparkle-4 {
+      bottom: 10%;
+      right: 8%;
+      color: #f9d5e0;
+      font-size: 33px;
+      animation-delay: 2.1s;
+    }
+
+    .sparkle-5 {
+      top: 50%;
+      left: 5%;
+      color: #f2d8c5;
+      font-size: 22px;
+      animation-delay: .5s;
+    }
+
+    .sparkle-6 {
+      top: 50%;
+      right: 5%;
+      color: #f5cbd8;
+      font-size: 24px;
+      animation-delay: 1.2s;
+    }
+
+    @keyframes sparkleFloat {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: .7;
+      }
+      25% {
+        transform: translateY(-15px) rotate(90deg) scale(1.2);
+        opacity: 1;
+      }
+      50% {
+        transform: translateY(-8px) rotate(180deg) scale(.9);
+        opacity: .8;
+      }
+      75% {
+        transform: translateY(-15px) rotate(270deg) scale(1.1);
+        opacity: 1;
+      }
+    }
+
+    /* 小星星粒子 */
+    .mini-sparkles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .mini-sparkle {
+      position: absolute;
+      color: #f5d5c8;
+      font-size: 12px;
+      opacity: .6;
+      animation: miniSparkleFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes miniSparkleFloat {
+      0% {
+        transform: translateY(0) scale(.8);
+        opacity: 0;
+      }
+      20% {
+        opacity: .6;
+      }
+      80% {
+        opacity: .4;
+      }
+      100% {
+        transform: translateY(-100px) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    /* 原来的生日展示区域 - 改为静态 */
+    .birthday-reveal {
+      display: none;
+      position: relative;
+      z-index: 15;
+      text-align: center;
+      margin: 25px auto 35px;
+    }
+
+    .birthday-reveal.show {
+      display: block;
+      animation: birthdayRevealIn 1.2s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .birthday-number {
+      font-family: "Inter", sans-serif;
+      font-size: clamp(110px, 25vw, 190px);
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -8px;
+      background: linear-gradient(
+        135deg,
+        #e9b5c5,
+        #d5a47d,
+        #f2cbd5,
+        #d6ad83
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 8px 15px rgba(197,145,158,.18));
+      animation: numberPop 1.2s cubic-bezier(.16,1.3,.3,1) both;
+    }
+
+    .birthday-happy {
+      color: #a87587;
+      font-size: clamp(35px, 8vw, 58px);
+      font-weight: 800;
+      letter-spacing: 8px;
+      margin: 12px 0;
+      text-shadow: 0 5px 15px rgba(195,145,160,.15);
+      animation: happyPop 1s .25s both;
+    }
+
+    .birthday-subtitle {
+      color: #bd9ba6;
+      font-size: 12px;
+      letter-spacing: 5px;
+      margin-top: 18px;
+      animation: happyPop 1s .5s both;
+    }
+
+    .birthday-decoration {
+      color: #d9b47f;
+      font-size: 24px;
+      margin-top: 18px;
+      letter-spacing: 5px;
+      animation: happyPop 1s .7s both;
+    }
+
+    @keyframes birthdayRevealIn {
+      from {
+        opacity: 0;
+        transform: translateY(35px) scale(.92);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes numberPop {
+      0% {
+        opacity: 0;
+        transform: scale(.3) rotate(-8deg);
+      }
+      70% {
+        opacity: 1;
+        transform: scale(1.12) rotate(2deg);
+      }
+      100% {
+        transform: scale(1) rotate(0);
+      }
+    }
+
+    @keyframes happyPop {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================
+       烟花画布
+    ========================= */
+
+    #fireworksCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* =========================
+       最终祝福卡片
+    ========================= */
+
+    .blessing {
+      display: none;
+      position: relative;
+      z-index: 12;
+      width: 100%;
+      max-width: 650px;
+      margin: 10px auto 0;
+      padding: 28px 25px;
+      border-radius: 26px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: 0 15px 45px rgba(180,125,145,.12);
+      backdrop-filter: blur(16px);
+    }
+
+    .blessing.show {
+      display: block;
+      animation: blessingIn 1s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes blessingIn {
+      from {
+        opacity: 0;
+        transform: translateY(25px) scale(.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .blessing-title {
+      font-size: 27px;
+      color: #a87889;
+      margin: 0 0 16px;
+      letter-spacing: 3px;
+    }
+
+    .blessing-text {
+      color: #927781;
+      font-size: 14px;
+      line-height: 2.2;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    .blessing-highlight {
+      color: #c18c9c;
+      font-weight: 700;
+    }
+
+    /* 小黄人合照 */
+    .minion-group {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 12px;
+      margin: 25px auto 15px;
+      height: 125px;
+    }
+
+    .minion-group img {
+      width: 76px;
+      height: 115px;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 8px rgba(130,95,105,.13));
+      animation: minionBounce 2.5s ease-in-out infinite;
+    }
+
+    .minion-group img:nth-child(2) {
+      height: 125px;
+      animation-delay: .2s;
+    }
+
+    .minion-group img:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes minionBounce {
+      0%,100% {
+        transform: translateY(0) rotate(0);
+      }
+      50% {
+        transform: translateY(-8px) rotate(3deg);
+      }
+    }
+
+    /* 按钮 */
+    .final-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .final-button {
+      border: none;
+      border-radius: 30px;
+      padding: 12px 24px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: transform .3s, box-shadow .3s;
+      text-decoration: none;
+    }
+
+    .final-button:hover {
+      transform: translateY(-3px);
+    }
+
+    .restart-button {
+      color: white;
+      background: linear-gradient(135deg, #e9b7c6, #dba6b8);
+      box-shadow: 0 7px 16px rgba(204,146,164,.2);
+    }
+
+    .home-button {
+      color: #a78290;
+      background: rgba(255,255,255,.85);
+      border: 1px solid #f0dce2;
+    }
+
+    .footer-text {
+      color: #c0a6ae;
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-top: 28px;
+    }
+
+    /* 爱心与星星 */
+    .floating-decoration {
+      position: fixed;
+      pointer-events: none;
+      z-index: 8;
+      animation: floatUp 3s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      from {
+        opacity: 0;
+        transform: translateY(0) rotate(0) scale(.7);
+      }
+      20% {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-180px) rotate(35deg) scale(1.3);
+      }
+    }
+
+    /* 手机适配 */
+    @media (max-width: 600px) {
+      .final-page {
+        padding: 45px 15px 30px;
+      }
+
+      .cake-scene {
+        height: 320px;
+        transform: scale(.85);
+        transform-origin: center center;
+        margin-top: -10px;
+        margin-bottom: -15px;
+      }
+
+      .main-title {
+        letter-spacing: 1px;
+      }
+
+      .blessing {
+        padding: 24px 18px;
+      }
+
+      .blessing-title {
+        font-size: 23px;
+      }
+
+      .minion-group img {
+        width: 65px;
+      }
+
+      .birthday-number {
+        letter-spacing: -5px;
+      }
+
+      .birthday-happy {
+        letter-spacing: 4px;
+      }
+
+      .birthday-subtitle {
+        letter-spacing: 3px;
+      }
+    }
+  </style>
+</head>
+
+<body data-bgm-track="normal">
+
+  <div class="background-glow glow-one"></div>
+  <div class="background-glow glow-two"></div>
+  <audio id="backgroundMusic" loop>
+      <source src="assets/music/birthday.mp3" type="audio/mpeg">
+  </audio>
+  <canvas id="fireworksCanvas"></canvas>
+
+  <!-- 29岁弹窗 - 精美版 -->
+  <div class="birthday-popup-overlay" id="birthdayPopupOverlay">
+    <div class="birthday-popup">
+      <!-- 背景小星星 -->
+      <div class="mini-sparkles">
+        <span class="mini-sparkle" style="left: 15%; bottom: 20%; animation-delay: 0s;">✦</span>
+        <span class="mini-sparkle" style="left: 25%; bottom: 40%; animation-delay: .5s;">✧</span>
+        <span class="mini-sparkle" style="left: 70%; bottom: 25%; animation-delay: 1s;">✦</span>
+        <span class="mini-sparkle" style="left: 80%; bottom: 45%; animation-delay: 1.5s;">✧</span>
+        <span class="mini-sparkle" style="left: 45%; bottom: 15%; animation-delay: 2s;">✦</span>
+        <span class="mini-sparkle" style="left: 60%; bottom: 50%; animation-delay: 2.5s;">✧</span>
+      </div>
+
+      <!-- 大装饰 -->
+      <span class="birthday-popup-sparkles sparkle-1">✨</span>
+      <span class="birthday-popup-sparkles sparkle-2">🎉</span>
+      <span class="birthday-popup-sparkles sparkle-3">⭐</span>
+      <span class="birthday-popup-sparkles sparkle-4">💫</span>
+      <span class="birthday-popup-sparkles sparkle-5">🌟</span>
+      <span class="birthday-popup-sparkles sparkle-6">✦</span>
+      
+      <!-- 主内容 -->
+      <div class="birthday-popup-content">
+        <div class="birthday-popup-icon">🎂</div>
+        <div class="birthday-popup-number">29</div>
+        <div class="birthday-popup-text">岁啦</div>
+        <div class="birthday-popup-subtitle">HAPPY BIRTHDAY</div>
+      </div>
+    </div>
+  </div>
+
+  <main class="final-page">
+
+    <div class="final-content">
+
+      <div class="top-label">A LITTLE BIRTHDAY SURPRISE</div>
+
+      <h1 class="main-title">最后一个愿望 ✨</h1>
+
+      <p class="subtitle">
+        希望新的一岁，也有很多很多快乐
+      </p>
+
+      <!-- 生日蛋糕 -->
+      <div class="cake-scene" id="cakeScene">
+
+        <div class="cake">
+
+          <!-- 四根蜡烛 -->
+          <div class="candles">
+
+            <div class="candle" data-candle="1">
+              <div class="wick"></div>
+              <div class="flame"></div>
+              <span class="candle-number">1</span>
+            </div>
+
+            <div class="candle" data-candle="2">
+              <div class="wick"></div>
+              <div class="flame"></div>
+              <span class="candle-number">1</span>
+            </div>
+
+            <div class="candle" data-candle="3">
+              <div class="wick"></div>
+              <div class="flame"></div>
+              <span class="candle-number">2</span>
+            </div>
+
+            <div class="candle" data-candle="4">
+              <div class="wick"></div>
+              <div class="flame"></div>
+              <span class="candle-number">5</span>
+            </div>
+
+          </div>
+
+          <!-- 蛋糕顶部 -->
+          <div class="cake-top"></div>
+
+          <!-- 奶油装饰 -->
+          <div class="cream-drip">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <!-- 蛋糕中层 -->
+          <div class="cake-middle"></div>
+
+          <!-- 蛋糕装饰 -->
+          <div class="cake-decoration">✦ ♡ ✦</div>
+
+          <!-- 蛋糕底层 -->
+          <div class="cake-bottom"></div>
+
+          <!-- 蛋糕底盘 -->
+          <div class="cake-plate"></div>
+
+        </div>
+
+      </div>
+
+      <p class="click-hint" id="clickHint">
+        轻轻点击蜡烛，许下你的生日愿望吧
+      </p>
+
+      <p class="progress-text" id="progressText">
+        已熄灭 0 / 4 根蜡烛
+      </p>
+
+      <!-- 吹灭蜡烛后的生日惊喜 -->
+      <div class="birthday-reveal" id="birthdayReveal">
+
+        <div class="birthday-number">29</div>
+
+        <h1 class="birthday-happy">
+          生日快乐！
+        </h1>
+
+        <p class="birthday-subtitle">
+          HAPPY BIRTHDAY TO YOU ♡
+        </p>
+
+        <div class="birthday-decoration">
+          ✦　♡　✦
+        </div>
+
+      </div>
+
+      <!-- 最终祝福 -->
+      <section class="blessing" id="blessing">
+
+        <h2 class="blessing-title">
+          生日快乐！♡
+        </h2>
+
+        <p class="blessing-text">
+          亲爱的姐姐，<br>
+          愿你新的一岁，<br>
+          <span class="blessing-highlight">每天都有小惊喜，永远被温柔包围。</span><br>
+          愿你想要的都拥有，<br>
+          得不到的都释怀，<br>
+          平安、健康、开心，永远闪闪发光。<br>
+          <span class="blessing-highlight">
+            11.25，今天的主角永远是你！
+          </span>
+        </p>
+
+        <!-- 三个小黄人 -->
+        <div class="minion-group">
+          <img src="assets/images/minions/kevin.png" alt="Kevin">
+          <img src="assets/images/minions/bob.png" alt="Bob">
+          <img src="assets/images/minions/stuart.png" alt="Stuart">
+        </div>
+
+        <div class="final-buttons">
+
+          <a href="password.html" class="final-button restart-button">
+            ↻ 再体验一次
+          </a>
+
+          <a href="index.html" class="final-button home-button">
+            返回生日小世界
+          </a>
+
+        </div>
+
+        <p class="footer-text">
+          MADE WITH LOVE · 11.25
+        </p>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <script src="js/common.js"></script>
+
+  <script>
+
+    // ==============================
+    // 1. 蜡烛点击与熄灭
+    // ==============================
+
+    const candles = document.querySelectorAll(".candle");
+
+    const progressText = document.getElementById("progressText");
+    const clickHint = document.getElementById("clickHint");
+    const blessing = document.getElementById("blessing");
+    const birthdayReveal = document.getElementById("birthdayReveal");
+    const birthdayPopupOverlay = document.getElementById("birthdayPopupOverlay");
+
+    let extinguishedCount = 0;
+    let celebrationStarted = false;
+
+    candles.forEach(candle => {
+
+      candle.addEventListener("click", () => {
+
+        if (candle.classList.contains("extinguished")) return;
+        if (celebrationStarted) return;
+
+        candle.classList.add("extinguished");
+
+        extinguishedCount++;
+
+        progressText.textContent =
+          `已熄灭 ${extinguishedCount} / 4 根蜡烛`;
+
+        createSmallStars(candle);
+
+        if (extinguishedCount === 4) {
+          startCelebration();
+        }
+
+      });
+
+    });
+
+
+    // ==============================
+    // 2. 点击蜡烛时的小星星
+    // ==============================
+
+    function createSmallStars(element) {
+
+      const rect = element.getBoundingClientRect();
+
+      for (let i = 0; i < 7; i++) {
+
+        const star = document.createElement("span");
+
+        star.className = "floating-decoration";
+
+        star.textContent =
+          Math.random() > .5 ? "✦" : "✧";
+
+        star.style.left =
+          rect.left + Math.random() * rect.width + "px";
+
+        star.style.top = rect.top + "px";
+
+        star.style.color =
+          Math.random() > .5 ? "#e8c8a8" : "#e9b8c8";
+
+        star.style.fontSize =
+          12 + Math.random() * 12 + "px";
+
+        document.body.appendChild(star);
+
+        setTimeout(() => star.remove(), 3000);
+
+      }
+
+    }
+
+
+    // ==============================
+    // 3. Canvas 烟花效果
+    // ==============================
+
+    const canvas = document.getElementById("fireworksCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let particles = [];
+    let animationRunning = false;
+
+    function resizeCanvas() {
+
+      const ratio = window.devicePixelRatio || 1;
+
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    }
+
+    resizeCanvas();
+
+    window.addEventListener("resize", resizeCanvas);
+
+    const colors = [
+      "#e9b8c8",
+      "#f2d6a8",
+      "#fff0c9",
+      "#e7c5d6",
+      "#f8d7e0"
+    ];
+
+    function createFirework(x, y) {
+
+      const color = colors[
+        Math.floor(Math.random() * colors.length)
+      ];
+
+      const count = 45;
+
+      for (let i = 0; i < count; i++) {
+
+        const angle = Math.PI * 2 * i / count;
+        const speed = 1 + Math.random() * 4;
+
+        particles.push({
+
+          x,
+          y,
+
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+
+          alpha: 1,
+          radius: 1.5 + Math.random() * 2,
+
+          color,
+          gravity: .035 + Math.random() * .025
+
+        });
+
+      }
+
+    }
+
+    function animateFireworks() {
+
+      if (!animationRunning) return;
+
+      ctx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+      );
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+
+        const particle = particles[i];
+
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        particle.vy += particle.gravity;
+
+        particle.vx *= .99;
+        particle.vy *= .99;
+
+        particle.alpha -= .012;
+
+        ctx.globalAlpha = Math.max(0, particle.alpha);
+
+        ctx.beginPath();
+
+        ctx.arc(
+          particle.x,
+          particle.y,
+          particle.radius,
+          0,
+          Math.PI * 2
+        );
+
+        ctx.fillStyle = particle.color;
+        ctx.fill();
+
+        if (particle.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+
+      }
+
+      ctx.globalAlpha = 1;
+
+      requestAnimationFrame(animateFireworks);
+
+    }
+
+
+    // ==============================
+    // 4. 全部熄灭后的庆祝
+    // ==============================
+
+    function startCelebration() {
+
+      if (celebrationStarted) return;
+
+      celebrationStarted = true;
+
+      clickHint.textContent = "愿望已经送达啦！✨";
+
+      progressText.textContent = "11.25 · 生日快乐！";
+
+      // 立即弹出29岁弹窗
+      birthdayPopupOverlay.classList.add("show");
+
+      // 5秒后关闭弹窗
+      setTimeout(() => {
+        birthdayPopupOverlay.classList.remove("show");
+      }, 1500);
+
+      // 弹窗消失后显示其他内容
+      setTimeout(() => {
+        birthdayReveal.classList.add("show");
+
+        setTimeout(() => {
+          blessing.classList.add("show");
+        }, 1200);
+      }, 2500);
+
+      // 开始烟花
+      animationRunning = true;
+
+      animateFireworks();
+
+      // 多个位置依次绽放
+      const fireworkTimer = setInterval(() => {
+
+        createFirework(
+          80 + Math.random() * (window.innerWidth - 160),
+          80 + Math.random() * (window.innerHeight * .45)
+        );
+
+      }, 450);
+
+      // 约 7 秒后停止产生新烟花
+      setTimeout(() => {
+
+        clearInterval(fireworkTimer);
+
+        // 等待剩余烟花粒子消失
+        setTimeout(() => {
+
+          animationRunning = false;
+          particles = [];
+
+          ctx.clearRect(
+            0,
+            0,
+            window.innerWidth,
+            window.innerHeight
+          );
+
+        }, 2500);
+
+      }, 7000);
+
+      // 飘落爱心
+      createCelebrationHearts();
+
+    }
+
+
+    // ==============================
+    // 5. 庆祝爱心
+    // ==============================
+
+    function createCelebrationHearts() {
+
+      const symbols = ["♡", "✦", "♥", "✧", "✨"];
+
+      for (let i = 0; i < 35; i++) {
+
+        setTimeout(() => {
+
+          const item = document.createElement("span");
+
+          item.className = "floating-decoration";
+
+          item.textContent =
+            symbols[Math.floor(Math.random() * symbols.length)];
+
+          item.style.left =
+            Math.random() * window.innerWidth + "px";
+
+          item.style.top =
+            window.innerHeight * (.55 + Math.random() * .35) + "px";
+
+          item.style.fontSize =
+            14 + Math.random() * 18 + "px";
+
+          item.style.color =
+            colors[Math.floor(Math.random() * colors.length)];
+
+          document.body.appendChild(item);
+
+          setTimeout(() => item.remove(), 3000);
+
+        }, i * 100);
+
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>

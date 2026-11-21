@@ -1,0 +1,291 @@
+
+/* =========================================
+   11.25 Birthday Surprise
+   全站公共样式
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600&display=swap');
+
+:root {
+    --pink: #f8d7e0;
+    --pink-deep: #eab9c8;
+    --pink-soft: #fce9ee;
+    --cream: #fff8fa;
+    --yellow: #ffdd44;
+    --gold: #e8c8a8;
+    --gold-dark: #c7a47e;
+    --text: #775e68;
+    --text-light: #a58b95;
+    --white-glass: rgba(255, 255, 255, 0.58);
+    --border-glass: rgba(255, 255, 255, 0.75);
+    --shadow-soft: 0 15px 45px rgba(190, 129, 151, 0.13);
+    --radius: 24px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(ellipse at 15% 15%, rgba(255,255,255,.95), transparent 40%),
+        radial-gradient(ellipse at 85% 25%, rgba(248,215,224,.8), transparent 42%),
+        radial-gradient(ellipse at 50% 100%, rgba(255,238,242,.9), transparent 55%),
+        linear-gradient(135deg, #fff8fa, #f8dfe6);
+    background-attachment: fixed;
+}
+
+/* 细腻背景肌理 */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: .18;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.17'/%3E%3C/svg%3E");
+}
+
+/* 背景柔光 */
+.ambient-light {
+    position: fixed;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    filter: blur(85px);
+    opacity: .35;
+    pointer-events: none;
+    z-index: -1;
+    animation: ambientFloat 14s ease-in-out infinite alternate;
+}
+
+.ambient-light.one {
+    background: #f3c4d2;
+    top: -120px;
+    left: -100px;
+}
+
+.ambient-light.two {
+    background: #fff1d7;
+    right: -120px;
+    bottom: -100px;
+    animation-delay: -5s;
+}
+
+@keyframes ambientFloat {
+    from {
+        transform: translate(0, 0);
+    }
+    to {
+        transform: translate(45px, 35px);
+    }
+}
+
+/* 页面切换 */
+.page-enter {
+    animation: pageEnter .9s var(--ease) both;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 毛玻璃 */
+.glass {
+    background: var(--white-glass);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-soft);
+}
+
+/* 通用顶部导航 */
+.global-header {
+    position: fixed;
+    top: 24px;
+    left: 28px;
+    right: 28px;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+}
+
+.global-header > * {
+    pointer-events: auto;
+}
+
+.glass-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 18px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    border-radius: 30px;
+    background: rgba(255,255,255,.56);
+    border: 1px solid rgba(255,255,255,.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 5px 20px rgba(180,130,150,.1);
+    cursor: pointer;
+    transition: all .35s var(--ease);
+}
+
+.glass-button:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,.85);
+    box-shadow: 0 10px 25px rgba(180,130,150,.17);
+}
+
+/* 通用按钮 */
+.primary-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 180px;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 30px;
+    color: #fff;
+    background: linear-gradient(135deg, #eab9c8, #dba8ba);
+    box-shadow: 0 8px 22px rgba(213,151,171,.25);
+    font-family: inherit;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all .35s var(--ease);
+}
+
+.primary-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 13px 28px rgba(213,151,171,.32);
+}
+
+.primary-button:active {
+    transform: translateY(-1px);
+}
+
+/* 通用气泡提示 */
+.toast-bubble {
+    position: fixed;
+    left: 50%;
+    bottom: 45px;
+    z-index: 300;
+    padding: 13px 23px;
+    border-radius: 30px;
+    background: rgba(255,255,255,.83);
+    backdrop-filter: blur(20px);
+    border: 1px solid white;
+    box-shadow: var(--shadow-soft);
+    color: var(--text);
+    font-size: 13px;
+    transform: translate(-50%, 20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .45s var(--ease);
+    white-space: normal;
+    max-width: calc(100vw - 40px);
+    text-align: center;
+}
+
+.toast-bubble.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* 通用小标题 */
+.eyebrow {
+    color: var(--gold-dark);
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.section-title {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: #795c68;
+}
+
+.section-subtitle {
+    margin-top: 12px;
+    color: var(--text-light);
+    font-size: 13px;
+    line-height: 1.9;
+    font-weight: 300;
+}
+
+/* 缓慢漂浮动画 */
+.float-animation {
+    animation: gentleFloat 5s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-9px);
+    }
+}
+
+/* 插画容器 */
+.illustration {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* 手机适配 */
+@media (max-width: 600px) {
+    .global-header {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+    }
+
+    .glass-button {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
+    .toast-bubble {
+        bottom: 25px;
+    }
+}
+
+/* 减少动态效果 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
